@@ -254,7 +254,8 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                     <h3>{project.title}</h3>
                   </div>
                   <div className="project-preview-tags">
-                    {project.tags.slice(0, 2).map((tag) => (
+                    {/* Three, so the database shows next to the language and framework. */}
+                    {project.tags.slice(0, 3).map((tag) => (
                       <span key={tag}>{tag}</span>
                     ))}
                   </div>
