@@ -223,13 +223,12 @@ function ProjectsSection({ copy }: { copy: Copy }) {
               data-kind={getProjectCategory(project)}
               style={{ ["--i" as string]: index }}
             >
-              <button
-                type="button"
-                className="project-open"
-                onClick={() => setSelectedProject(project)}
-                aria-haspopup="dialog"
-                aria-label={`View details for ${project.title}`}
-              >
+              {/* Kartunya bukan lagi satu <button> raksasa. Tautan Play game
+                  harus bisa diklik sendiri, dan sebuah <a> di dalam <button>
+                  bukan HTML yang sah — kliknya juga akan ikut membuka modal.
+                  Jadi isinya kini div biasa, dan tombol pembuka modal menjadi
+                  lapisan tak terlihat yang menutupi kartu di bawah tautan itu. */}
+              <div className="project-open">
                 <div className="project-preview">
                   <ProjectVisual
                     project={project}
@@ -239,6 +238,16 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <span>{project.kind}</span>
                   </div>
+                  {project.gameUrl ? (
+                    <a
+                      className="project-card__play"
+                      href={project.gameUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Play game <span aria-hidden="true">→</span>
+                    </a>
+                  ) : null}
                   <span className="project-preview__action">VIEW CASE ↗</span>
                 </div>
 
@@ -261,7 +270,15 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                     <p className="project-card__line">{project.subtitle}</p>
                   </div>
                 </div>
-              </button>
+              </div>
+
+              <button
+                type="button"
+                className="project-card__hit"
+                onClick={() => setSelectedProject(project)}
+                aria-haspopup="dialog"
+                aria-label={`View details for ${project.title}`}
+              />
             </article>
           ))}
         </div>
@@ -462,7 +479,12 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                   </a>
                 ) : null}
                 {selectedProject.liveUrl !== "#" && !selectedProject.gameUrl ? (
-                  <a href={selectedProject.liveUrl} target="_blank" rel="noreferrer">
+                  <a
+                    className="project-play"
+                    href={selectedProject.liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Visit project <Icon name="external" size={14} />
                   </a>
                 ) : null}
