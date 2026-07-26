@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Game tebak negara berdasarkan petunjuk geografi, budaya, sejarah, dan ikon terkenal.">
+    <meta name="theme-color" content="#dce9eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Guess Country">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    <title>Tebak Negara</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #dce9eb;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .attempts-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .round-stats { display: flex; justify-content: space-between; gap: 10px; margin: -10px 0 24px; }
+        .round-stat { flex: 1; padding: 10px 12px; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; background: rgba(255,255,255,.045); }
+        .round-stat small { display: block; color: #888; font-size: .66rem; letter-spacing: 1px; text-transform: uppercase; }
+        .round-stat strong { display: block; margin-top: 3px; color: #ffd200; font-size: 1.15rem; }
+
+        .attempt-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .attempt-dot.used {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .attempt-dot.current {
+            border-color: #ffd200;
+            box-shadow: 0 0 10px rgba(255, 210, 0, 0.4);
+        }
+
+        .clue-section {
+            margin-bottom: 25px;
+        }
+
+        .clue-label {
+            font-size: 0.8rem;
+            color: #ffd200;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .clues-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .clue-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.4s ease;
+        }
+
+        .clue-item.locked {
+            opacity: 0.3;
+            border-style: dashed;
+        }
+
+        .clue-number {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            color: #000;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .clue-item.locked .clue-number {
+            background: rgba(255, 255, 255, 0.1);
+            color: #666;
+        }
+
+        .clue-text {
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .clue-category {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .guess-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .guess-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .guess-input:focus {
+            border-color: #ffd200;
+        }
+
+        .guess-input::placeholder {
+            color: #666;
+        }
+
+        .guess-btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            color: #000;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .guess-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 210, 0, 0.3);
+        }
+
+        .guess-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message.wrong {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .message.correct {
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+
+        .message.lose {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .guess-history {
+            margin-top: 15px;
+        }
+
+        .history-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .history-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .history-tag {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-decoration: line-through;
+        }
+
+        .play-again-btn {
+            display: none;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .play-again-btn.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .play-again-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 560px) {
+            body { padding: 18px 0; align-items: flex-start; }
+            .container { width: calc(100% - 24px); padding: 24px 18px; }
+            .guess-section { flex-direction: column; }
+            .guess-btn { width: 100%; }
+        }
+
+        /* GAME LAYOUT */
+        :root {
+            --ink: #11152b;
+            --paper: #f6f0e7;
+            --violet: #26736f;
+            --orange: #c6912d;
+            --cyan: #84dff0;
+            --line: rgba(17, 21, 43, .11);
+        }
+
+        body {
+            position: relative;
+            align-items: center;
+            padding: clamp(18px, 4vw, 54px);
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at 13% 15%, rgba(38,115,111,.2), transparent 25%),
+                radial-gradient(circle at 87% 78%, rgba(255,128,93,.2), transparent 25%),
+                linear-gradient(135deg, #090d1d, #161a35 52%, #0b1023);
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            opacity: .42;
+            background:
+                linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black, transparent 76%);
+            pointer-events: none;
+        }
+
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1120px, 100%);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.32);
+            border-radius: clamp(24px, 4vw, 42px);
+            background: var(--paper);
+            box-shadow: 0 42px 120px rgba(0,0,0,.42);
+        }
+
+        .game-header {
+            min-height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 14px clamp(20px, 3vw, 34px);
+            border-bottom: 1px solid var(--line);
+            background: rgba(255,255,255,.45);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: var(--ink);
+            color: white;
+            font-size: 18px;
+            box-shadow: 6px 6px 0 rgba(38,115,111,.18);
+        }
+
+        .brand strong,
+        .brand small {
+            display: block;
+        }
+
+        .brand strong {
+            font-size: 12px;
+            letter-spacing: -.02em;
+        }
+
+        .brand small {
+            margin-top: 2px;
+            color: rgba(17,21,43,.42);
+            font-size: 7px;
+            font-weight: 850;
+            letter-spacing: .13em;
+        }
+
+        .header-tools {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .round-badge {
+            padding: 9px 12px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            color: rgba(17,21,43,.52);
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+
+        .sound-toggle {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            background: white;
+            color: var(--ink);
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .sound-toggle[aria-pressed="true"] {
+            border-color: var(--violet);
+            background: var(--violet);
+            color: white;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: minmax(280px, .78fr) minmax(430px, 1.22fr);
+        }
+
+        .intel-panel {
+            position: relative;
+            min-height: 640px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: clamp(30px, 4vw, 52px);
+            border-right: 1px solid var(--line);
+            background:
+                linear-gradient(var(--line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line) 1px, transparent 1px),
+                radial-gradient(circle at 88% 7%, rgba(38,115,111,.16), transparent 28%),
+                var(--paper);
+            background-size: 30px 30px, 30px 30px, auto, auto;
+        }
+
+        .intel-panel::after {
+            content: "WORLD";
+            position: absolute;
+            right: -.08em;
+            bottom: -.1em;
+            color: rgba(17,21,43,.035);
+            font-size: clamp(8rem, 14vw, 13rem);
+            font-weight: 1000;
+            line-height: .8;
+            letter-spacing: -.08em;
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            color: var(--violet);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+        }
+
+        .intel-panel h1 {
+            max-width: 430px;
+            margin-top: 18px;
+            color: var(--ink);
+            text-align: left;
+            font-size: clamp(3.4rem, 6vw, 6rem);
+            font-weight: 1000;
+            line-height: .8;
+            letter-spacing: -.085em;
+            background: none;
+            -webkit-text-fill-color: currentColor;
+            text-transform: uppercase;
+        }
+
+        .intel-panel h1 span {
+            position: relative;
+            display: inline-block;
+            color: var(--violet);
+        }
+
+        .intel-panel h1 span::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            bottom: -.08em;
+            left: 0;
+            height: .08em;
+            border-radius: 999px;
+            background: var(--orange);
+            transform: rotate(-2deg);
+        }
+
+        .intel-panel .subtitle {
+            max-width: 390px;
+            margin: 30px 0 0;
+            color: rgba(17,21,43,.58);
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.75;
+        }
+
+        .attempt-group {
+            position: relative;
+            z-index: 1;
+            margin-top: 34px;
+        }
+
+        .attempt-caption {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: rgba(17,21,43,.44);
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: .13em;
+        }
+
+        .attempts-bar {
+            justify-content: flex-start;
+            gap: 7px;
+            margin: 0;
+        }
+
+        .attempt-dot {
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,.7);
+            color: var(--ink);
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+        .attempt-dot.current {
+            border-color: var(--violet);
+            background: var(--violet);
+            color: white;
+            box-shadow: 0 0 0 5px rgba(38,115,111,.12);
+        }
+
+        .attempt-dot.used {
+            border-color: rgba(255,128,93,.35);
+            background: rgba(255,128,93,.12);
+            color: var(--orange);
+        }
+
+        .round-stats {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 7px;
+            margin: auto 0 0;
+            padding-top: 34px;
+        }
+
+        .round-stat {
+            padding: 13px 11px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255,255,255,.62);
+        }
+
+        .round-stat small {
+            color: rgba(17,21,43,.4);
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: .12em;
+        }
+
+        .round-stat strong {
+            margin-top: 5px;
+            color: var(--ink);
+            font-size: 1.35rem;
+            letter-spacing: -.05em;
+        }
+
+        .play-panel {
+            position: relative;
+            min-width: 0;
+            padding: clamp(28px, 4vw, 52px);
+            background:
+                radial-gradient(circle at 90% 10%, rgba(132,223,240,.28), transparent 24%),
+                linear-gradient(145deg, #f8f5ef, #eeeaf8);
+        }
+
+        .panel-topline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .clue-label {
+            margin: 0;
+            color: var(--violet);
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .16em;
+        }
+
+        .clue-progress {
+            color: rgba(17,21,43,.44);
+            font-size: 8px;
+            font-weight: 850;
+            letter-spacing: .1em;
+        }
+
+        .clue-section {
+            margin-bottom: 22px;
+        }
+
+        .clues-container {
+            gap: 8px;
+        }
+
+        .clue-item {
+            position: relative;
+            min-height: 67px;
+            gap: 13px;
+            padding: 13px 15px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: rgba(255,255,255,.68);
+            box-shadow: 0 8px 26px rgba(27,31,67,.045);
+            color: var(--ink);
+        }
+
+        .clue-item:not(.locked)::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 3px;
+            background: var(--violet);
+        }
+
+        .clue-item.locked {
+            opacity: .46;
+            border-style: dashed;
+        }
+
+        .clue-number,
+        .clue-item.locked .clue-number {
+            width: 32px;
+            height: 32px;
+            background: var(--ink);
+            color: white;
+            font-size: 9px;
+        }
+
+        .clue-item.locked .clue-number {
+            background: rgba(17,21,43,.09);
+            color: rgba(17,21,43,.36);
+        }
+
+        .clue-category {
+            color: var(--violet);
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: .13em;
+        }
+
+        .clue-text {
+            margin-top: 4px;
+            font-size: 12px;
+            font-weight: 650;
+            line-height: 1.45;
+        }
+
+        .guess-section {
+            gap: 8px;
+            margin-bottom: 14px;
+            padding: 7px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255,255,255,.78);
+            box-shadow: 0 16px 42px rgba(27,31,67,.08);
+        }
+
+        .guess-input {
+            min-width: 0;
+            padding: 11px 15px;
+            border: 0;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--ink);
+            font-size: 13px;
+        }
+
+        .guess-input:focus {
+            border-color: transparent;
+            box-shadow: none;
+        }
+
+        .guess-input::placeholder {
+            color: rgba(17,21,43,.36);
+        }
+
+        .guess-btn,
+        .play-again-btn {
+            border-radius: 999px;
+            background: var(--ink);
+            color: white;
+            font-size: 9px;
+            font-weight: 900;
+            letter-spacing: .1em;
+        }
+
+        .guess-btn {
+            min-width: 112px;
+            padding: 12px 20px;
+        }
+
+        .guess-btn:hover,
+        .play-again-btn:hover {
+            background: var(--violet);
+            box-shadow: 0 10px 24px rgba(38,115,111,.22);
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 12px 14px;
+            border-radius: 13px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .message.wrong,
+        .message.lose {
+            border-color: rgba(255,128,93,.3);
+            background: rgba(255,128,93,.1);
+            color: #b94a2c;
+        }
+
+        .message.correct {
+            border-color: rgba(44,181,118,.28);
+            background: rgba(44,181,118,.1);
+            color: #19734a;
+        }
+
+        .guess-history {
+            margin-top: 12px;
+        }
+
+        .history-label {
+            color: rgba(17,21,43,.42);
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: .13em;
+        }
+
+        .history-tag {
+            border-color: rgba(255,128,93,.22);
+            background: rgba(255,128,93,.09);
+            color: #ad4a31;
+            font-size: 9px;
+        }
+
+        .play-again-btn {
+            padding: 14px 20px;
+            margin-top: 14px;
+        }
+
+        .confetti {
+            position: absolute;
+            z-index: 20;
+            top: 48%;
+            left: 68%;
+            width: 7px;
+            height: 12px;
+            border-radius: 2px;
+            pointer-events: none;
+            animation: confettiBurst .9s cubic-bezier(.16,1,.3,1) forwards;
+        }
+
+        @keyframes confettiBurst {
+            to {
+                opacity: 0;
+                transform: translate(var(--x), var(--y)) rotate(var(--r));
+            }
+        }
+
+        @media (max-width: 820px) {
+            body {
+                display: block;
+                padding: 0;
+                background: var(--paper);
+            }
+
+            .app-shell {
+                width: 100%;
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .intel-panel {
+                min-height: auto;
+                padding: 30px 22px 24px;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .intel-panel h1 {
+                font-size: clamp(3.2rem, 13vw, 5.2rem);
+            }
+
+            .intel-panel .subtitle {
+                margin-top: 22px;
+            }
+
+            .attempt-group {
+                margin-top: 25px;
+            }
+
+            .round-stats {
+                margin-top: 22px;
+                padding-top: 0;
+            }
+
+            .play-panel {
+                padding: 28px 20px 40px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            body {
+                padding: 0;
+            }
+
+            .game-header {
+                min-height: 60px;
+                padding: 11px 16px;
+            }
+
+            .round-badge {
+                display: none;
+            }
+
+            .intel-panel {
+                padding: 25px 16px 22px;
+            }
+
+            .intel-panel .subtitle {
+                font-size: 12px;
+            }
+
+            .attempts-bar {
+                gap: 5px;
+            }
+
+            .attempt-dot {
+                width: 31px;
+                height: 31px;
+            }
+
+            .play-panel {
+                padding: 24px 14px 34px;
+            }
+
+            .clue-item {
+                min-height: 62px;
+                padding: 11px 12px;
+            }
+
+            .guess-section {
+                flex-direction: row;
+            }
+
+            .guess-btn {
+                width: auto;
+                min-width: 88px;
+                padding-inline: 14px;
+            }
+        }
+
+        /* SIMPLE GAME-FIRST LAYOUT */
+        :root {
+            --ink: #1d3438;
+            --paper: #f7f4ec;
+            --teal: #26736f;
+            --teal-soft: #d8e8e5;
+            --orange: #b9851f;
+            --line: rgba(29, 52, 56, .16);
+        }
+
+        body {
+            padding: 28px;
+            background: #dce9eb;
+            color: var(--ink);
+        }
+
+        body::before {
+            display: none;
+        }
+
+        .app-shell {
+            width: min(940px, 100%);
+            overflow: visible;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .game-header {
+            min-height: 48px;
+            padding: 0 0 14px;
+            border-bottom: 1px solid var(--line);
+            background: transparent;
+        }
+
+        .brand {
+            gap: 0;
+        }
+
+        .brand-mark {
+            display: none;
+        }
+
+        .brand strong {
+            color: var(--ink);
+            font-size: 14px;
+            letter-spacing: -.02em;
+        }
+
+        .brand small {
+            color: #6d8488;
+            font-size: 8px;
+            letter-spacing: .08em;
+        }
+
+        .round-badge {
+            padding: 0;
+            border: 0;
+            color: #6d8488;
+        }
+
+        .sound-toggle {
+            width: 36px;
+            height: 36px;
+            border-color: var(--line);
+            background: rgba(255,255,255,.52);
+            color: var(--ink);
+        }
+
+        .sound-toggle[aria-pressed="true"] {
+            border-color: var(--teal);
+            background: var(--teal);
+        }
+
+        .game-grid {
+            grid-template-columns: minmax(430px, 1fr) minmax(220px, 280px);
+            grid-template-areas: "play info";
+            gap: 46px;
+            padding-top: 26px;
+        }
+
+        .play-panel {
+            grid-area: play;
+            min-width: 0;
+            padding: 24px 28px 28px;
+            border: 1px solid rgba(29,52,56,.13);
+            border-radius: 18px;
+            background: #f8faf8;
+            box-shadow: 0 16px 38px rgba(44,75,82,.1);
+        }
+
+        .intel-panel {
+            grid-area: info;
+            min-height: 0;
+            padding: 12px 0;
+            overflow: visible;
+            border: 0;
+            background: transparent;
+        }
+
+        .intel-panel::after {
+            display: none;
+        }
+
+        .eyebrow {
+            color: var(--teal);
+            font-size: 8px;
+            letter-spacing: .1em;
+        }
+
+        .side-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .side-top .sound-toggle {
+            flex: 0 0 auto;
+        }
+
+        .intel-panel h1 {
+            max-width: 260px;
+            margin-top: 12px;
+            color: var(--ink);
+            font-size: clamp(2.35rem, 5vw, 3.5rem);
+            font-weight: 850;
+            line-height: .92;
+            letter-spacing: -.06em;
+            text-transform: none;
+        }
+
+        .intel-panel h1 span {
+            color: var(--orange);
+        }
+
+        .intel-panel h1 span::after {
+            display: none;
+        }
+
+        .intel-panel .subtitle {
+            max-width: 260px;
+            margin-top: 18px;
+            color: #526b70;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .attempt-group {
+            margin-top: 26px;
+        }
+
+        .attempt-caption {
+            margin-bottom: 10px;
+            color: #6d8488;
+            font-size: 7px;
+        }
+
+        .attempts-bar {
+            gap: 6px;
+        }
+
+        .attempt-dot {
+            width: 29px;
+            height: 29px;
+            border-color: var(--line);
+            background: rgba(255,255,255,.48);
+            font-size: 8px;
+        }
+
+        .attempt-dot.current {
+            border-color: var(--teal);
+            background: var(--teal);
+            box-shadow: none;
+        }
+
+        .attempt-dot.used {
+            border-color: rgba(233,111,72,.35);
+            background: rgba(233,111,72,.1);
+            color: #b84f31;
+        }
+
+        .round-stats {
+            display: flex;
+            gap: 0;
+            margin-top: 24px;
+            padding-top: 0;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .round-stat {
+            flex: 1;
+            padding: 12px 10px 12px 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+        }
+
+        .round-stat + .round-stat {
+            padding-left: 10px;
+            border-left: 1px solid var(--line);
+        }
+
+        .round-stat small {
+            color: #75888c;
+        }
+
+        .round-stat strong {
+            color: var(--ink);
+            font-size: 1.15rem;
+        }
+
+        .panel-topline {
+            margin-bottom: 10px;
+        }
+
+        .clue-label {
+            color: var(--teal);
+            font-size: 9px;
+            letter-spacing: .1em;
+        }
+
+        .clue-progress {
+            color: #71858a;
+        }
+
+        .clue-section {
+            margin-bottom: 22px;
+        }
+
+        .clues-container {
+            gap: 0;
+        }
+
+        .clue-item {
+            min-height: 69px;
+            gap: 13px;
+            padding: 13px 4px;
+            overflow: visible;
+            border: 0;
+            border-bottom: 1px solid var(--line);
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .clue-item:first-child {
+            border-top: 1px solid var(--line);
+        }
+
+        .clue-item:not(.locked)::after {
+            display: none;
+        }
+
+        .clue-item.locked {
+            opacity: .38;
+            border-style: solid;
+        }
+
+        .clue-number,
+        .clue-item.locked .clue-number {
+            width: 29px;
+            height: 29px;
+            background: var(--teal-soft);
+            color: var(--teal);
+        }
+
+        .clue-item.locked .clue-number {
+            background: #e7eceb;
+            color: #829295;
+        }
+
+        .clue-category {
+            color: var(--teal);
+            font-size: 7px;
+        }
+
+        .clue-text {
+            color: var(--ink);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .guess-section {
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 0;
+            border: 0;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .guess-input {
+            padding: 12px 2px;
+            border: 0;
+            border-bottom: 2px solid #aabbbd;
+            border-radius: 0;
+            background: transparent;
+            color: var(--ink);
+        }
+
+        .guess-input:focus {
+            border-color: var(--teal);
+        }
+
+        .guess-btn,
+        .play-again-btn {
+            border-radius: 10px;
+            background: var(--teal);
+            color: #fff;
+        }
+
+        .guess-btn:hover,
+        .play-again-btn:hover {
+            background: #1d5e5b;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .message {
+            border-radius: 8px;
+        }
+
+        .history-tag {
+            border-radius: 6px;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                display: block;
+                padding: 16px;
+                background: #dce9eb;
+            }
+
+            .app-shell {
+                width: min(560px, 100%);
+                margin: 0 auto;
+            }
+
+            .game-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 22px;
+                padding-top: 18px;
+            }
+
+            .play-panel {
+                order: 1;
+                padding: 20px 18px 24px;
+            }
+
+            .intel-panel {
+                order: 2;
+                padding: 0 2px 12px;
+                border: 0;
+            }
+
+            .intel-panel h1 {
+                max-width: none;
+                font-size: clamp(1.9rem, 9.5vw, 2.35rem);
+                white-space: nowrap;
+            }
+
+            .intel-panel .subtitle {
+                max-width: none;
+                margin-top: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .game-header {
+                padding-inline: 4px;
+            }
+
+            .play-panel {
+                padding: 18px 14px 22px;
+            }
+
+            .clue-item {
+                min-height: 63px;
+                padding-block: 11px;
+            }
+
+            .guess-section {
+                flex-direction: row;
+            }
+
+            .guess-btn {
+                width: auto;
+                min-width: 84px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="app-shell">
+        <div class="game-grid">
+            <section class="intel-panel">
+                <div class="side-top">
+                    <p class="eyebrow">MINI GAME 02</p>
+                    <button class="sound-toggle" id="soundToggle" type="button" aria-label="Matikan suara" aria-pressed="true">♪</button>
+                </div>
+                <h1>Guess <span>Country</span></h1>
+                <p class="subtitle">
+                    Baca petunjuk, lalu ketik nama negara. Setiap jawaban salah membuka satu petunjuk baru.
+                </p>
+
+                <div class="attempt-group">
+                    <div class="attempt-caption">
+                        <span>SISA KESEMPATAN</span>
+                        <span id="attemptText">06 / 06</span>
+                    </div>
+                    <div class="attempts-bar" id="attemptsBar"></div>
+                </div>
+
+                <div class="round-stats" aria-label="Statistik permainan">
+                    <div class="round-stat"><small>Skor</small><strong id="scoreValue">0</strong></div>
+                    <div class="round-stat"><small>Streak</small><strong id="streakValue">0</strong></div>
+                    <div class="round-stat"><small>Terbaik</small><strong id="bestValue">0</strong></div>
+                </div>
+            </section>
+
+            <section class="play-panel">
+                <div class="panel-topline">
+                    <div class="clue-label">PETUNJUK</div>
+                    <div class="clue-progress" id="clueProgress">01 / 05</div>
+                </div>
+
+                <div class="clue-section">
+                    <div class="clues-container" id="cluesContainer"></div>
+                </div>
+
+                <div class="guess-section">
+                    <input type="text" class="guess-input" id="guessInput" placeholder="Ketik nama negara..." autocomplete="off" aria-label="Tebak nama negara">
+                    <button class="guess-btn" id="guessBtn" type="button">TEBAK</button>
+                </div>
+
+                <div class="message" id="message" role="status" aria-live="polite"></div>
+
+                <div class="guess-history" id="guessHistory" style="display: none;">
+                    <div class="history-label">JAWABAN SEBELUMNYA</div>
+                    <div class="history-tags" id="historyTags"></div>
+                </div>
+
+                <button class="play-again-btn" id="playAgainBtn" type="button">NEGARA BERIKUTNYA</button>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const countries = [
+            {
+                name: "Jepang",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Asia" },
+                    { category: "Bentuk", text: "Negara kepulauan dengan ribuan pulau" },
+                    { category: "Ikon", text: "Terkenal dengan bunga sakura dan Gunung Fuji" },
+                    { category: "Makanan", text: "Sushi dan ramen berasal dari sini" },
+                    { category: "Budaya", text: "Negeri matahari terbit, budaya samurai dan anime" }
+                ]
+            },
+            {
+                name: "Brasil",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Amerika Selatan" },
+                    { category: "Alam", text: "Memiliki hutan hujan tropis terbesar di dunia" },
+                    { category: "Olahraga", text: "Negara dengan gelar Piala Dunia terbanyak" },
+                    { category: "Ikon", text: "Patung Kristus Penebus berdiri di kota utamanya" },
+                    { category: "Budaya", text: "Karnaval dan samba sangat terkenal di sini" }
+                ]
+            },
+            {
+                name: "Mesir",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Afrika" },
+                    { category: "Sungai", text: "Dilalui oleh sungai terpanjang di dunia" },
+                    { category: "Sejarah", text: "Dulunya diperintah oleh firaun" },
+                    { category: "Ikon", text: "Piramida dan Sphinx ada di sini" },
+                    { category: "Geografi", text: "Sebagian besar wilayahnya adalah gurun pasir" }
+                ]
+            },
+            {
+                name: "Korea Selatan",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Asia" },
+                    { category: "Lokasi", text: "Berada di semenanjung, berbatasan dengan satu negara lain" },
+                    { category: "Teknologi", text: "Markas besar Samsung dan Hyundai" },
+                    { category: "Budaya", text: "K-pop dan K-drama berasal dari sini" },
+                    { category: "Ibukota", text: "Ibukotanya adalah kota terpadat di negara ini" }
+                ]
+            },
+            {
+                name: "Italia",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Eropa" },
+                    { category: "Bentuk", text: "Bentuk negaranya menyerupai sepatu bot" },
+                    { category: "Makanan", text: "Pizza dan pasta berasal dari sini" },
+                    { category: "Kota", text: "Memiliki kota di dalam negaranya yang sangat kecil" },
+                    { category: "Sejarah", text: "Dulunya pusat Kekaisaran Romawi" }
+                ]
+            },
+            {
+                name: "Australia",
+                clues: [
+                    { category: "Benua", text: "Merupakan negara sekaligus benua" },
+                    { category: "Alam", text: "Terkenal dengan terumbu karang terbesar di dunia" },
+                    { category: "Hewan", text: "Hewan khasnya memiliki kantung untuk membawa anak" },
+                    { category: "Ibukota", text: "Ibukotanya bukan kota terbesarnya" },
+                    { category: "Geografi", text: "Sebagian besar wilayahnya adalah gurun kering" }
+                ]
+            },
+            {
+                name: "Islandia",
+                clues: [
+                    { category: "Benua", text: "Terletak di antara Eropa dan Amerika Utara" },
+                    { category: "Alam", text: "Negara dengan banyak gunung berapi dan geyser" },
+                    { category: "Ikon", text: "Terkenal dengan aurora borealis dan mata air panas" },
+                    { category: "Populasi", text: "Salah satu negara dengan populasi paling sedikit di Eropa" },
+                    { category: "Nama", text: "Namanya berarti 'negara es'" }
+                ]
+            },
+            {
+                name: "India",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Asia" },
+                    { category: "Populasi", text: "Salah satu negara dengan populasi terbanyak di dunia" },
+                    { category: "Sungai", text: "Sungai Gangga sangat suci di negara ini" },
+                    { category: "Ikon", text: "Taj Mahal berdiri megah di sini" },
+                    { category: "Budaya", text: "Bollywood dan festival Holi berasal dari sini" }
+                ]
+            },
+            {
+                name: "Kanada",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Amerika Utara" },
+                    { category: "Luas", text: "Negara terluas kedua di dunia" },
+                    { category: "Alam", text: "Terkenal dengan danau-danau dan maple leaf" },
+                    { category: "Bahasa", text: "Memiliki dua bahasa resmi" },
+                    { category: "Musim", text: "Musim dinginnya sangat ekstrem dan bersalju" }
+                ]
+            },
+            {
+                name: "Maroko",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Afrika" },
+                    { category: "Lokasi", text: "Berada di ujung barat laut benuanya" },
+                    { category: "Kota", text: "Kota Chefchaouen terkenal dengan warna birunya" },
+                    { category: "Makanan", text: "Tajine dan couscous adalah makanan khas" },
+                    { category: "Geografi", text: "Memiliki gurun pasir yang sangat luas di selatan" }
+                ]
+            },
+            {
+                name: "Thailand",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Asia Tenggara" },
+                    { category: "Nama", text: "Namanya berarti 'tanah kebebasan'" },
+                    { category: "Makanan", text: "Tom Yum dan Pad Thai berasal dari sini" },
+                    { category: "Ikon", text: "Terkenal dengan kuil-kuil emas megah" },
+                    { category: "Fakta", text: "Satu-satunya negara Asia Tenggara yang tidak pernah dijajah" }
+                ]
+            },
+            {
+                name: "Argentina",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Amerika Selatan" },
+                    { category: "Olahraga", text: "Negara kelahiran Lionel Messi" },
+                    { category: "Tari", text: "Tarian tango berasal dari sini" },
+                    { category: "Alam", text: "Memiliki wilayah Patagonia dan gletser raksasa" },
+                    { category: "Makanan", text: "Terkenal dengan daging steak dan asado" }
+                ]
+            },
+            {
+                name: "Turki",
+                clues: [
+                    { category: "Benua", text: "Terletak di dua benua sekaligus" },
+                    { category: "Kota", text: "Kota terbesarnya memiliki dua sisi yang dipisahkan selat" },
+                    { category: "Sejarah", text: "Dulunya pusat Kekaisaran Ottoman" },
+                    { category: "Makanan", text: "Kebab dan baklava berasal dari sini" },
+                    { category: "Ikon", text: "Hagia Sophia dan Blue Mosque berdiri di sini" }
+                ]
+            },
+            {
+                name: "Norwegia",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Eropa Utara" },
+                    { category: "Alam", text: "Terkenal dengan fjord-fjord yang dramatis" },
+                    { category: "Fakta", text: "Salah satu negara terkaya di dunia" },
+                    { category: "Musim", text: "Mengalami matahari tengah malam di musim panas" },
+                    { category: "Ikon", text: "Negara Skandinavia yang berbatasan dengan Rusia" }
+                ]
+            },
+            {
+                name: "Kenya",
+                clues: [
+                    { category: "Benua", text: "Terletak di benua Afrika Timur" },
+                    { category: "Alam", text: "Terkenal dengan safari dan sabana luas" },
+                    { category: "Olahraga", text: "Pelari jarak jauh terbaik dunia berasal dari sini" },
+                    { category: "Hewan", text: "Migrasi besar hewan terjadi di wilayahnya" },
+                    { category: "Gunung", text: "Gunung tertinggi di Afrika Timur ada di sini" }
+                ]
+            }
+        ];
+
+        let currentCountry = null;
+        let revealedClues = 0;
+        let attemptsLeft = 0;
+        let wrongGuesses = [];
+        let gameOver = false;
+        let deck = [];
+        let deckIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let bestScore = Number(localStorage.getItem("guessCountryBest") || 0);
+        let audioContext = null;
+        let soundEnabled = localStorage.getItem("guessCountrySound") !== "off";
+        const MAX_ATTEMPTS = 6;
+        const MAX_CLUES = 5;
+        const countryAliases = {
+            "Jepang": ["Japan"],
+            "Brasil": ["Brazil"],
+            "Mesir": ["Egypt"],
+            "Korea Selatan": ["South Korea", "Republic of Korea", "Korea"],
+            "Italia": ["Italy"],
+            "Islandia": ["Iceland"],
+            "Kanada": ["Canada"],
+            "Maroko": ["Morocco"],
+            "Turki": ["Turkey", "Turkiye", "Türkiye"],
+            "Norwegia": ["Norway"]
+        };
+
+        function normalizeAnswer(value) {
+            return value
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]+/g, " ")
+                .trim();
+        }
+
+        function isCorrectAnswer(guess) {
+            const acceptedAnswers = [
+                currentCountry.name,
+                ...(countryAliases[currentCountry.name] || [])
+            ];
+            const normalizedGuess = normalizeAnswer(guess);
+            return acceptedAnswers.some((answer) => normalizeAnswer(answer) === normalizedGuess);
+        }
+
+        function ensureAudio() {
+            if (!audioContext) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioContext = new AudioContextClass();
+            }
+            if (audioContext && audioContext.state === "suspended") audioContext.resume();
+        }
+
+        function tone(frequency, duration, type = "sine", volume = 0.06, delay = 0) {
+            if (!soundEnabled) return;
+            ensureAudio();
+            if (!audioContext) return;
+
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            const start = audioContext.currentTime + delay;
+            oscillator.type = type;
+            oscillator.frequency.setValueAtTime(frequency, start);
+            gain.gain.setValueAtTime(volume, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+            oscillator.start(start);
+            oscillator.stop(start + duration);
+        }
+
+        function playSound(name) {
+            if (name === "start") {
+                tone(380, .1, "triangle", .04);
+                tone(540, .12, "triangle", .045, .07);
+            } else if (name === "wrong") {
+                tone(220, .14, "sawtooth", .045);
+                tone(170, .18, "triangle", .035, .08);
+            } else if (name === "correct") {
+                tone(520, .12, "sine", .055);
+                tone(690, .13, "triangle", .055, .07);
+                tone(880, .2, "triangle", .05, .14);
+            } else if (name === "lose") {
+                tone(260, .16, "triangle", .045);
+                tone(190, .2, "triangle", .04, .1);
+                tone(125, .28, "sine", .035, .2);
+            } else if (name === "toggle") {
+                tone(640, .09, "sine", .04);
+            }
+        }
+
+        function updateSoundUi() {
+            const button = document.getElementById("soundToggle");
+            button.setAttribute("aria-pressed", String(soundEnabled));
+            button.setAttribute("aria-label", soundEnabled ? "Matikan suara" : "Nyalakan suara");
+            button.textContent = soundEnabled ? "♪" : "×";
+        }
+
+        function celebrate() {
+            const shell = document.querySelector(".app-shell");
+            const colors = ["#26736f", "#c6912d", "#79c7d3", "#edc85e", "#56a66f"];
+            const fragment = document.createDocumentFragment();
+            for (let i = 0; i < 28; i++) {
+                const piece = document.createElement("i");
+                piece.className = "confetti";
+                piece.style.background = colors[i % colors.length];
+                piece.style.setProperty("--x", `${(Math.random() - .5) * 480}px`);
+                piece.style.setProperty("--y", `${(Math.random() - .65) * 380}px`);
+                piece.style.setProperty("--r", `${Math.random() * 720 - 360}deg`);
+                fragment.appendChild(piece);
+            }
+            shell.appendChild(fragment);
+            window.setTimeout(() => {
+                shell.querySelectorAll(".confetti").forEach((piece) => piece.remove());
+            }, 950);
+        }
+
+        function shuffleArray(arr) {
+            const shuffled = [...arr];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function getNextCountry() {
+            if (deckIndex >= deck.length) {
+                deck = shuffleArray(countries);
+                deckIndex = 0;
+            }
+            return deck[deckIndex++];
+        }
+
+        function startNewGame() {
+            currentCountry = getNextCountry();
+            revealedClues = 1;
+            attemptsLeft = MAX_ATTEMPTS;
+            wrongGuesses = [];
+            gameOver = false;
+            score = 0;
+
+            document.getElementById("guessInput").value = "";
+            document.getElementById("guessInput").disabled = false;
+            document.getElementById("guessBtn").disabled = false;
+            document.getElementById("message").className = "message";
+            document.getElementById("message").textContent = "";
+            document.getElementById("guessHistory").style.display = "none";
+            document.getElementById("historyTags").innerHTML = "";
+            document.getElementById("playAgainBtn").className = "play-again-btn";
+            renderStats();
+
+            renderAttempts();
+            renderClues();
+            playSound("start");
+            document.getElementById("guessInput").focus();
+        }
+
+        function renderStats() {
+            document.getElementById("scoreValue").textContent = score;
+            document.getElementById("streakValue").textContent = streak;
+            document.getElementById("bestValue").textContent = bestScore;
+        }
+
+        function renderAttempts() {
+            const bar = document.getElementById("attemptsBar");
+            const fragment = document.createDocumentFragment();
+            document.getElementById("attemptText").textContent =
+                `${String(attemptsLeft).padStart(2, "0")} / ${String(MAX_ATTEMPTS).padStart(2, "0")}`;
+            for (let i = 0; i < MAX_ATTEMPTS; i++) {
+                const dot = document.createElement("div");
+                dot.className = "attempt-dot";
+                if (i < MAX_ATTEMPTS - attemptsLeft) {
+                    dot.className += " used";
+                    dot.textContent = "✗";
+                } else if (i === MAX_ATTEMPTS - attemptsLeft) {
+                    dot.className += " current";
+                }
+                dot.textContent = dot.classList.contains("used") ? "×" : String(i + 1).padStart(2, "0");
+                fragment.appendChild(dot);
+            }
+            bar.replaceChildren(fragment);
+        }
+
+        function renderClues() {
+            const container = document.getElementById("cluesContainer");
+            const fragment = document.createDocumentFragment();
+            document.getElementById("clueProgress").textContent =
+                `${String(revealedClues).padStart(2, "0")} / ${String(MAX_CLUES).padStart(2, "0")}`;
+            for (let i = 0; i < MAX_CLUES; i++) {
+                const clue = currentCountry.clues[i];
+                const item = document.createElement("div");
+                const number = document.createElement("div");
+                const content = document.createElement("div");
+                const category = document.createElement("div");
+                const text = document.createElement("div");
+                item.className = "clue-item" + (i >= revealedClues ? " locked" : "");
+                number.className = "clue-number";
+                number.textContent = i + 1;
+                category.className = "clue-category";
+                category.textContent = clue.category;
+                text.className = "clue-text";
+                text.textContent = i < revealedClues ? clue.text : "???";
+                content.append(category, text);
+                item.append(number, content);
+                fragment.appendChild(item);
+            }
+            container.replaceChildren(fragment);
+        }
+
+        function showMessage(text, type) {
+            const msg = document.getElementById("message");
+            msg.textContent = text;
+            msg.className = "message show " + type;
+        }
+
+        function addWrongGuess(name) {
+            wrongGuesses.push(name);
+            const container = document.getElementById("guessHistory");
+            container.style.display = "block";
+            const tags = document.getElementById("historyTags");
+            const tag = document.createElement("span");
+            tag.className = "history-tag";
+            tag.textContent = name;
+            tags.appendChild(tag);
+        }
+
+        function endGame(won) {
+            gameOver = true;
+            document.getElementById("guessInput").disabled = true;
+            document.getElementById("guessBtn").disabled = true;
+            document.getElementById("playAgainBtn").className = "play-again-btn show";
+
+            if (won) {
+                score = Math.max(10, attemptsLeft * 10 + (MAX_CLUES - revealedClues + 1) * 15);
+                streak++;
+                if (score > bestScore) {
+                    bestScore = score;
+                    localStorage.setItem("guessCountryBest", bestScore);
+                }
+                renderStats();
+                showMessage(`Benar! Jawabannya adalah ${currentCountry.name}!`, "correct");
+                playSound("correct");
+                celebrate();
+            } else {
+                streak = 0;
+                renderStats();
+                showMessage(`Kesempatan habis! Jawabannya adalah ${currentCountry.name}.`, "lose");
+                playSound("lose");
+                revealAllClues();
+            }
+        }
+
+        function revealAllClues() {
+            revealedClues = MAX_CLUES;
+            renderClues();
+        }
+
+        function makeGuess() {
+            if (gameOver) return;
+
+            const input = document.getElementById("guessInput");
+            const guess = input.value.trim();
+
+            if (!guess) return;
+
+            if (isCorrectAnswer(guess)) {
+                endGame(true);
+                return;
+            }
+
+            addWrongGuess(guess);
+            attemptsLeft--;
+            renderAttempts();
+
+            if (attemptsLeft <= 0) {
+                endGame(false);
+                return;
+            }
+
+            if (revealedClues < MAX_CLUES) {
+                revealedClues++;
+                renderClues();
+            }
+
+            const remaining = attemptsLeft;
+            showMessage(`Salah! Sisa ${remaining} kesempatan. Clue baru ditambahkan.`, "wrong");
+            playSound("wrong");
+            renderStats();
+            input.value = "";
+            input.focus();
+        }
+
+        document.getElementById("guessInput").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                makeGuess();
+            }
+        });
+
+        document.getElementById("guessBtn").addEventListener("click", makeGuess);
+        document.getElementById("playAgainBtn").addEventListener("click", startNewGame);
+
+        document.getElementById("soundToggle").addEventListener("click", function() {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem("guessCountrySound", soundEnabled ? "on" : "off");
+            if (soundEnabled) playSound("toggle");
+            updateSoundUi();
+        });
+
+        updateSoundUi();
+        startNewGame();
+
+        if ("serviceWorker" in navigator && location.protocol !== "file:") {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>
