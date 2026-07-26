@@ -85,7 +85,7 @@ const stackGroups: StackGroup[] = [
       { name: "Vercel", mark: "VE", logo: "/logos/vercel.svg" },
       { name: "Railway", mark: "RW", logo: "/logos/railway.svg" },
       { name: "Cloudflare", mark: "CF", logo: "/logos/cloudflare.svg" },
-      { name: "Tencent VPS", mark: "TC" },
+      { name: "Tencent VPS", mark: "TC", logo: "/logos/tencent-vps.webp" },
       { name: "GitHub Pages", mark: "GP", logo: "/logos/github-pages.svg", invert: true },
       { name: "Neon", mark: "NE", logo: "/logos/neon.svg" },
     ],

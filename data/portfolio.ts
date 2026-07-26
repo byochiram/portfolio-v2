@@ -321,18 +321,32 @@ export const portfolio = {
       description:
         "A management system for the tenant side of a shopping mall: units and floors, lease contracts and renewals, invoicing, payments with uploaded proof, and automated reminders.",
       bullets: [
-        "Tenant records with contacts, documents, notes and unit assignments",
-        "Lease contracts with renewal tracking across floors and units",
-        "Invoicing with line items, payments, and uploaded payment proof",
-        "Scheduled email reminders plus an activity log over every change",
+        "Tenant directory with contacts, documents, notes and unit assignments",
+        "Floor plan with per-unit area, rate per m², and occupancy status",
+        "Lease contracts with renewal and termination, service charge and revenue share",
+        "Invoicing with bulk generation, payment verification, and an aging report",
+        "Seven roles with their own permissions, plus a self-service tenant portal",
       ],
-      tags: ["React", "Express", "Prisma", "PostgreSQL", "JWT", "Vite"],
+      tags: ["React", "Express", "Prisma", "PostgreSQL", "JWT", "Nginx"],
       liveUrl: "https://mall.kakros.id/",
       repoUrl: "https://github.com/byochiram/mall-tenant-app",
       visual: "auction",
-      previewUrl: "",
+      previewUrl: "/projects/mall/preview-3.webp",
+      screenshots: [
+        "/projects/mall/preview-1.webp",
+        "/projects/mall/preview-2.webp",
+        "/projects/mall/preview-3.webp",
+        "/projects/mall/preview-4.webp",
+        "/projects/mall/preview-5.webp",
+        "/projects/mall/preview-6.webp",
+        "/projects/mall/preview-7.webp",
+        "/projects/mall/preview-8.webp",
+        "/projects/mall/preview-9.webp",
+        "/projects/mall/preview-10.webp",
+        "/projects/mall/preview-11.webp",
+      ],
       kind: "Web App",
-      badge: "Full-stack",
+      badge: "Live Project",
       problem:
         "A mall's tenancy usually lives in spreadsheets and chat threads. Lease renewals get noticed late, invoices go out by hand, and proof of payment arrives as a photo in a conversation with nothing tying it back to the invoice it settles.",
       solution:
@@ -346,6 +360,7 @@ export const portfolio = {
       metrics: [
         { value: "17", label: "data models" },
         { value: "11", label: "API modules" },
+        { value: "7", label: "roles" },
         { value: "6", label: "test suites" },
       ],
       process: [
@@ -361,8 +376,8 @@ export const portfolio = {
         },
         {
           phase: "Implementation",
-          did: "Built JWT auth with hashed passwords, schema validation on every request, file upload for payment proof, and a nightly cron job for reminder emails.",
-          artifact: "React client, Express API",
+          did: "Built JWT auth with hashed passwords and seven roles guarded per endpoint — leasing staff cannot touch finance, and a tenant only ever sees their own unit. Added schema validation on every request, upload for payment proof, and a nightly job for reminder emails.",
+          artifact: "React client, Express API, role guards",
         },
         {
           phase: "Testing",
@@ -371,8 +386,8 @@ export const portfolio = {
         },
         {
           phase: "Deployment",
-          did: "Split hosting by workload: static front end on Vercel, API on Render, PostgreSQL on Neon, with Docker files and CI in the repo.",
-          artifact: "Vercel + Render + Neon",
+          did: "First planned a split free-tier stack — Vercel, Render and Neon — but the free API tier slept when idle and wiped uploaded payment proof on every redeploy, which a billing system cannot live with. Moved the whole stack onto a single Tencent Cloud VPS instead, where the files persist and there is no cold start.",
+          artifact: "Tencent Cloud VPS, mall.kakros.id",
         },
       ],
     },
@@ -391,7 +406,8 @@ export const portfolio = {
       liveUrl: "https://todo-app-bmg.pages.dev/",
       repoUrl: "https://github.com/byochiram/todo-app",
       visual: "academic",
-      previewUrl: "",
+      previewUrl: "/projects/todo/preview-1.webp",
+      screenshots: ["/projects/todo/preview-1.webp"],
       kind: "Web App",
       badge: "Live App",
       problem:
