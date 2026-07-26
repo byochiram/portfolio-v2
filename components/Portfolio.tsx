@@ -117,6 +117,26 @@ export default function Portfolio() {
     return () => observer.disconnect();
   }, []);
 
+  // Infinite marquees/orbits are expensive to keep compositing, so anything
+  // scrolled out of view is flagged and paused via CSS until it returns.
+  useEffect(() => {
+    const blocks = Array.from(
+      document.querySelectorAll<HTMLElement>("main > section, main > .sxn")
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          entry.target.classList.toggle("is-offscreen", !entry.isIntersecting);
+        }
+      },
+      { rootMargin: "150px 0px" }
+    );
+
+    blocks.forEach((block) => observer.observe(block));
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     const observer = new IntersectionObserver(

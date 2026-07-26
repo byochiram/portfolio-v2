@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Manrope, Anton } from "next/font/google";
-import { headers } from "next/headers";
 import "./globals.css";
+
+// Static site URL. Reading request headers here would opt the whole route out of
+// static generation, so the origin is configured instead of derived per request.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://portfolio-v2-byochiram.vercel.app";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -30,12 +33,9 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.includes("localhost") ? "http" : "https");
-  const siteUrl = new URL(`${protocol}://${host}`);
-  const socialImage = new URL("/og.png", siteUrl).toString();
+export const metadata: Metadata = (() => {
+  const siteUrl = new URL(SITE_URL);
+  const socialImage = new URL("/og.webp", siteUrl).toString();
 
   return {
     metadataBase: siteUrl,
@@ -56,7 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: "Fresh graduate. Practical builder. Open to entry-level IT opportunities.",
       type: "website",
       url: siteUrl,
-      images: [{ url: socialImage, width: 1731, height: 909, alt: "Rosidah Rahmati — Software Developer" }],
+      images: [{ url: socialImage, width: 1200, height: 630, alt: "Rosidah Rahmati — Software Developer" }],
     },
     twitter: {
       card: "summary_large_image",
@@ -65,7 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [socialImage],
     },
   };
-}
+})();
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

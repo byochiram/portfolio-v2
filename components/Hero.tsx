@@ -208,8 +208,12 @@ export default function Hero({ ready }: { ready: boolean }) {
           <img
             ref={photoRef}
             className="hero__photo"
-            src="/rosidah-portrait.png"
+            src="/rosidah-portrait.webp"
             alt="Rosidah Rahmati"
+            width={923}
+            height={1416}
+            fetchPriority="high"
+            decoding="async"
           />
         </div>
       </div>

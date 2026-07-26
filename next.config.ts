@@ -5,6 +5,15 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   // optimizeCss (critters) was caching stale CSS during `next dev`; disabled for a reliable dev loop.
+  images: {
+    // Project screenshots live on a worker that serves them uncached and at full
+    // size; routing them through the image optimizer resizes and caches them.
+    remotePatterns: [
+      { protocol: "https", hostname: "my.rosispace.workers.dev", pathname: "/**" },
+    ],
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+  },
   async headers() {
     return [
       {

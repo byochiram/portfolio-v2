@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { portfolio, Project } from "@/data/portfolio";
 import Icon from "@/components/Icon";
 
@@ -26,10 +27,14 @@ function ProjectVisual({
 }) {
   if (project.previewUrl) {
     return (
-      <img
+      <Image
         src={project.previewUrl}
         alt={`${project.title} interface preview`}
-        loading={eager ? "eager" : "lazy"}
+        width={480}
+        height={360}
+        sizes="(max-width: 700px) 90vw, 30vw"
+        priority={eager}
+        loading={eager ? undefined : "lazy"}
       />
     );
   }
@@ -254,9 +259,12 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                 {selectedProject.screenshots?.length ? (
                   selectedProject.screenshots.map((screenshot, index) => (
                     <figure key={screenshot}>
-                      <img
+                      <Image
                         src={screenshot}
                         alt={`${selectedProject.title} screenshot ${index + 1}`}
+                        width={900}
+                        height={620}
+                        sizes="(max-width: 900px) 92vw, 60vw"
                         loading={index === 0 ? "eager" : "lazy"}
                       />
                       <figcaption>{String(index + 1).padStart(2, "0")}</figcaption>

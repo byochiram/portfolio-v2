@@ -294,7 +294,16 @@ export default function DraggableLanyardCard({
         </div>
 
         <div className="lanyard-card__portrait" aria-hidden="true">
-          <img className="lanyard-card__avatar" src="/rosidah-lanyard-crop.png" alt="" draggable={false} />
+          <img
+            className="lanyard-card__avatar"
+            src="/rosidah-lanyard-crop.webp"
+            alt=""
+            width={640}
+            height={767}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
         </div>
 
         <div className="lanyard-card__identity">
