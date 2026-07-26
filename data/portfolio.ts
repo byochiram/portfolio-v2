@@ -537,60 +537,192 @@ export const portfolio = {
     },
     {
       title: "PCOS Diagnosis",
-      subtitle: "PCOS Risk Prediction — Streamlit ML App",
+      subtitle: "Clinical risk prediction — model + dashboard",
       description:
-        "An interactive machine-learning app that estimates PCOS (Polycystic Ovary Syndrome) risk from clinical and lifestyle inputs, deployed on Streamlit Cloud.",
+        "A model that estimates PCOS risk from eleven clinical indicators, paired with a Power BI dashboard that shows which symptoms actually separate the two groups.",
       bullets: [
-        "Interactive form for clinical and lifestyle inputs",
-        "Trained classification model behind the prediction",
-        "Instant risk result rendered in the browser",
-        "Publicly deployed on Streamlit Cloud",
+        "Random Forest and XGBoost compared on the same held-out test set",
+        "SMOTE applied to correct a two-to-one class imbalance",
+        "Feature importance surfaced so a prediction can be explained",
+        "Power BI dashboard profiling follicle count, weight gain and hair growth",
       ],
-      tags: ["Python", "Streamlit", "scikit-learn", "Pandas"],
+      tags: ["Python", "scikit-learn", "XGBoost", "Streamlit", "Power BI"],
       liveUrl: "https://pcos-diagnosis.streamlit.app/",
       repoUrl: "https://github.com/byochiram/pcos-diagnosis",
       visual: "data",
-      previewUrl: "",
+      previewUrl: "/projects/pcos/preview-1.webp",
+      screenshots: ["/projects/pcos/preview-1.webp"],
       kind: "Data",
       badge: "ML App",
+      problem:
+        "PCOS is diagnosed from a scatter of clinical indicators, and the dataset reflects how uneven that is — of 541 patients, only about a third actually have it. Train a model on that as-is and it learns the cheapest possible trick: answer \"no\" every time and still look accurate.",
+      solution:
+        "A model that is corrected for the imbalance and can explain itself, plus a dashboard that shows which indicators do the separating.",
+      role: "Solo — data preparation, modelling and dashboard",
+      hardPart: {
+        title: "An accurate model that is still useless",
+        body:
+          "With a 67/33 split, always guessing \"not PCOS\" scores 67% accuracy while catching zero actual cases — which is the one outcome that matters here. SMOTE rebalances the training data so the minority class carries real weight, and Random Forest and XGBoost are then compared on the same untouched test set rather than on the resampled data. The app also shows feature importance, because a risk score a person cannot interrogate is not something to hand to anyone. It is labelled an educational tool throughout, not a diagnosis.",
+      },
+      metrics: [
+        { value: "541", label: "patients" },
+        { value: "11", label: "clinical features" },
+        { value: "2", label: "models compared" },
+        { value: "33%", label: "positive class" },
+      ],
+      process: [
+        {
+          phase: "Data understanding",
+          did: "Profiled the Kaggle PCOS dataset and found the class imbalance early — roughly two negatives for every positive — which shaped every decision after it.",
+          artifact: "Exploratory analysis",
+        },
+        {
+          phase: "Feature selection",
+          did: "Narrowed 40+ recorded columns down to the 11 clinical indicators that actually carried signal, rather than feeding the model everything and hoping.",
+          artifact: "11 selected features",
+        },
+        {
+          phase: "Modelling",
+          did: "Applied SMOTE to the training split only, then trained Random Forest and XGBoost and compared them on the same held-out test set.",
+          artifact: "Two candidate models",
+        },
+        {
+          phase: "Explainability",
+          did: "Exposed feature importance in the app so a prediction can be traced back to the indicators behind it, and put a medical disclaimer on every screen.",
+          artifact: "Feature importance view",
+        },
+        {
+          phase: "Dashboard",
+          did: "Built a Power BI view of the same data — diagnosis composition, follicle count, weight gain and hair growth per group — to show the patterns without running the model.",
+          artifact: "Power BI dashboard",
+        },
+      ],
     },
     {
       title: "Student Lifestyle Clustering",
-      subtitle: "Unsupervised Student Segmentation",
+      subtitle: "Finding student types with K-Means",
       description:
-        "A clustering app that groups students by lifestyle patterns to reveal distinct behavioral segments, deployed on Streamlit Cloud.",
+        "K-Means over the daily habits of 2,000 students — study, sleep, social and physical hours against GPA and stress — with a live app that places any new student on the cluster map.",
       bullets: [
-        "Explores student lifestyle data",
-        "Unsupervised clustering to form student segments",
-        "Interactive visualization of the resulting clusters",
-        "Publicly deployed on Streamlit Cloud",
+        "K-Means over seven lifestyle features, mapped to 2D with PCA",
+        "Move the sliders and see which cluster you land in, live",
+        "Cluster averages with a written interpretation of each group",
+        "Batch mode: upload a CSV, cluster everyone, download the result",
       ],
-      tags: ["Python", "Streamlit", "scikit-learn", "Pandas"],
+      tags: ["Python", "scikit-learn", "K-Means", "Streamlit", "Power BI"],
       liveUrl: "https://student-lifestyle-clustering.streamlit.app/",
       repoUrl: "https://github.com/byochiram/student-lifestyle-clustering",
       visual: "data",
-      previewUrl: "",
+      previewUrl: "/projects/student/preview-1.webp",
+      screenshots: ["/projects/student/preview-1.webp"],
       kind: "Data",
       badge: "Clustering",
+      problem:
+        "Advice for students is usually one-size-fits-all, but 2,000 students do not share one lifestyle. There are no labels in this data saying which type someone is, so the groups have to be found rather than looked up.",
+      solution:
+        "Cluster students by how they actually spend a day, then let anyone drop their own habits in and see which group they fall into.",
+      role: "Solo — clustering, app and dashboard",
+      hardPart: {
+        title: "The result that argued with the assumption",
+        body:
+          "The expectation going in was that stress drags grades down. The data says the opposite: average GPA climbs with stress level — 2.82 at low, 3.02 at moderate, 3.26 at high — and so do study hours, from 5.5 to 8.4 a day. Stress here tracks effort, not failure. That is worth stating carefully rather than dressing up as a finding about wellbeing, and it is also why the dashboard reports stress alongside hours instead of on its own. More than half of the cohort sits in the high-stress group.",
+      },
+      metrics: [
+        { value: "2,000", label: "students" },
+        { value: "7", label: "lifestyle features" },
+        { value: "51%", label: "in high stress" },
+        { value: "3.12", label: "average GPA" },
+      ],
+      process: [
+        {
+          phase: "Data understanding",
+          did: "Profiled seven daily-habit features — study, extracurricular, sleep, social and physical hours, against GPA and stress level — and checked their spread before clustering anything.",
+          artifact: "Exploratory analysis",
+        },
+        {
+          phase: "Preparation",
+          did: "Scaled the features so hours and GPA sit on comparable ranges, since K-Means measures plain distance and would otherwise let the largest numbers decide the clusters.",
+          artifact: "Scaled feature set",
+        },
+        {
+          phase: "Clustering",
+          did: "Fitted K-Means, then reduced to two dimensions with PCA so the clusters could actually be looked at rather than only tabulated.",
+          artifact: "K-Means model, PCA map",
+        },
+        {
+          phase: "Interpretation",
+          did: "Wrote out what each cluster means in plain terms from its averages, so the output is a description of a student rather than a number.",
+          artifact: "Cluster profiles",
+        },
+        {
+          phase: "Delivery",
+          did: "Shipped a Streamlit app with sliders for one student and CSV upload for many, plus a Power BI dashboard tying stress to GPA and study hours.",
+          artifact: "Streamlit app, Power BI dashboard",
+        },
+      ],
     },
     {
       title: "Predict Customer Segment",
-      subtitle: "Customer Segmentation Prediction",
+      subtitle: "Four-way segment classification for market entry",
       description:
-        "An app that predicts a customer's segment from their attributes to support targeting and marketing decisions, deployed on Streamlit Cloud.",
+        "A Random Forest that sorts customers into segments A to D from nine demographic and behavioural fields, built around an automotive company entering a new market with 2,627 unlabelled prospects.",
       bullets: [
-        "Input customer attributes through the form",
-        "Model predicts the customer segment",
-        "Instant result for quick decision support",
-        "Publicly deployed on Streamlit Cloud",
+        "Predicts one customer with the probability of each of the four segments",
+        "Bulk mode: upload a CSV of prospects and download them classified",
+        "Segment profiles by age, work experience and family size",
+        "Test-set accuracy shown in the app rather than claimed in a README",
       ],
-      tags: ["Python", "Streamlit", "scikit-learn", "Pandas"],
+      tags: ["Python", "scikit-learn", "Random Forest", "Streamlit", "Power BI"],
       liveUrl: "https://predict-customer-segment.streamlit.app/",
       repoUrl: "https://github.com/byochiram/customer-segmentation",
       visual: "data",
-      previewUrl: "",
+      previewUrl: "/projects/segment/preview-1.webp",
+      screenshots: ["/projects/segment/preview-1.webp"],
       kind: "Data",
       badge: "Segmentation",
+      problem:
+        "An automotive company moving into a new market already knows how to talk to its existing customers, sorted into four segments. The 2,627 people in the new market carry no segment at all — and treating them as one undifferentiated audience wastes most of the outreach.",
+      solution:
+        "Learn the segment boundaries from the 8,068 customers who are already labelled, then apply them to the new market in bulk.",
+      role: "Solo — modelling, app and dashboard",
+      hardPart: {
+        title: "Four classes, and a wrong answer that still costs",
+        body:
+          "Sorting into four segments is not a right-or-wrong call the way a yes-or-no model is; being wrong between two adjacent segments matters far less than being wrong across the board. So the app returns the probability of every segment, not just the winner — a prospect that comes back 45 percent B and 40 percent C is a genuinely different signal from one that is 95 percent B, and it lets a marketer decide how much to spend rather than trusting a single label.",
+      },
+      metrics: [
+        { value: "8,068", label: "labelled customers" },
+        { value: "2,627", label: "new prospects" },
+        { value: "4", label: "segments" },
+        { value: "9", label: "features" },
+      ],
+      process: [
+        {
+          phase: "Framing",
+          did: "Took the business question as it was asked — which of four segments does an unseen prospect belong to — and treated it as multi-class classification rather than clustering, since the segments already existed.",
+          artifact: "Problem definition",
+        },
+        {
+          phase: "Data understanding",
+          did: "Profiled the nine features across 8,068 labelled customers and checked segment balance, age spread and profession mix before modelling.",
+          artifact: "Exploratory analysis",
+        },
+        {
+          phase: "Modelling",
+          did: "Trained a Random Forest over the labelled set and evaluated it on a holdout split, so the accuracy shown in the app is measured on data the model never saw.",
+          artifact: "Random Forest classifier",
+        },
+        {
+          phase: "Delivery",
+          did: "Built both paths marketing would actually use: one prospect at a time with per-segment probabilities, and CSV in, classified CSV out for the whole new market.",
+          artifact: "Streamlit app, bulk prediction",
+        },
+        {
+          phase: "Dashboard",
+          did: "Added a Power BI view of the customer base — segment composition, age groups, profession and spending score — so the segments can be understood without touching the model.",
+          artifact: "Power BI dashboard",
+        },
+      ],
     },
   ] satisfies Project[],
   awards: [
