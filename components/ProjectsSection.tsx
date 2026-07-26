@@ -451,7 +451,12 @@ function ProjectsSection({ copy }: { copy: Copy }) {
             <footer className="pm__foot">
               <div className="project-links">
                 {selectedProject.gameUrl ? (
-                  <a className="project-play" href={selectedProject.gameUrl}>
+                  <a
+                    className="project-play"
+                    href={selectedProject.gameUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     Play game <span aria-hidden="true">→</span>
                   </a>
                 ) : null}
