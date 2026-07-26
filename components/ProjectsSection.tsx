@@ -465,11 +465,6 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                     <Icon name="code" size={14} /> Source code
                   </a>
                 ) : null}
-                {selectedProject.links?.map((link) => (
-                  <a key={link.url} href={link.url} target="_blank" rel="noreferrer">
-                    {link.label} <Icon name="external" size={14} />
-                  </a>
-                ))}
               </div>
             </footer>
                 </div>

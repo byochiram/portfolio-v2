@@ -43,8 +43,6 @@ export type Project = {
   diagram?: "tempus" | "sigma" | "sipp";
   /** Shown when a project cannot simply be opened in a browser. */
   access?: string;
-  /** Extra destinations beyond live site and repo — notebooks, datasets. */
-  links?: { label: string; url: string }[];
 };
 
 export const portfolio = {
@@ -561,12 +559,6 @@ export const portfolio = {
       ],
       kind: "Data",
       badge: "ML App",
-      links: [
-        {
-          label: "Notebook",
-          url: "https://colab.research.google.com/drive/1-PPUvfObI-09P4q7pcNfHISAqACJFfKQ",
-        },
-      ],
       problem:
         "PCOS is diagnosed from a scatter of clinical indicators, and the dataset reflects how uneven that is — of 541 patients, only about a third actually have it. Train a model on that as-is and it learns the cheapest possible trick: answer \"no\" every time and still look accurate.",
       solution:
@@ -636,20 +628,6 @@ export const portfolio = {
       ],
       kind: "Data",
       badge: "Clustering",
-      links: [
-        {
-          label: "Notebook",
-          url: "https://colab.research.google.com/drive/1cf3stFI7x_rKccUmRE9h1TgI7ysSbPrP",
-        },
-        {
-          label: "Notebook 2",
-          url: "https://colab.research.google.com/drive/1TelgFfyzQJBkitcXCdBkehwjat12zT9y",
-        },
-        {
-          label: "Dataset",
-          url: "https://drive.google.com/drive/folders/1Wp5SnZe3QF2qQq5WXetyUglGUpQVzs0L",
-        },
-      ],
       problem:
         "Advice for students is usually one-size-fits-all, but 2,000 students do not share one lifestyle. There are no labels in this data saying which type someone is, so the groups have to be found rather than looked up.",
       solution:
@@ -720,12 +698,6 @@ export const portfolio = {
       ],
       kind: "Data",
       badge: "Segmentation",
-      links: [
-        {
-          label: "Notebook",
-          url: "https://colab.research.google.com/drive/10kiA1RN5fbKihkq6nL2SeVxqR1rwk9c2",
-        },
-      ],
       problem:
         "An automotive company moving into a new market already knows how to talk to its existing customers, sorted into four segments. The 2,627 people in the new market carry no segment at all — and treating them as one undifferentiated audience wastes most of the outreach.",
       solution:
