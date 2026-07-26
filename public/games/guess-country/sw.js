@@ -39,6 +39,13 @@ self.addEventListener("fetch", (event) => {
         }
         return response;
       })
-      .catch(() => caches.match(request).then((cached) => cached || caches.match("./index.html")))
+      .catch(() => caches.match(request).then((cached) => {
+        if (cached) return cached;
+        /* Hanya navigasi yang boleh dijawab dengan dokumen HTML. Menjawab
+           permintaan skrip dengan index.html membuat browser mengurai HTML
+           sebagai JavaScript, dan game berhenti di layar memuat. */
+        if (request.mode === "navigate") return caches.match("./index.html");
+        return Response.error();
+      }))
   );
 });

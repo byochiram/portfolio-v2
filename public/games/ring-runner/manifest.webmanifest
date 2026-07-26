@@ -2,7 +2,7 @@
   "name": "Pesawat — Ring Runner",
   "short_name": "Ring Runner",
   "description": "Game 3D: terbangkan pesawat menembus lingkaran. Tugas Besar Grafika Komputer & Visual.",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
