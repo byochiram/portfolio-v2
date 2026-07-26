@@ -6838,3 +6838,159 @@ main > section {
     transform: none;
   }
 }
+
+/* ══ SECTION HEADINGS · AWARDS · CONTACT · FOOTER ══ */
+
+/* 1 · The green dot on the orbit ring landed mid-section, reading as a stray
+       speck rather than decoration. */
+.about__orbit-map span:nth-child(1) { display: none; }
+
+/* 2 · The three closing sections now carry the same heading shape as About and
+       Stack: one accented word with the orange rule under it, at a size that
+       does not swallow the section. "Selected projects" was 96px. */
+.projects .section-title,
+.awards .section-title,
+.contact-simple .section-title {
+  font-size: clamp(2.1rem, 3.5vw, 3.1rem);
+  line-height: 1.04;
+  letter-spacing: -.02em;
+}
+.projects .section-title em,
+.awards .section-title em,
+.contact-simple .section-title em {
+  position: relative;
+  color: #2a746c;
+  font-style: normal;
+}
+/* Contact reads as a light cream section, not the dark one an earlier pass had,
+   so it takes the same green as the rest. A brighter teal measured 2.38:1
+   against this background. */
+.projects .section-title em::after,
+.awards .section-title em::after,
+.contact-simple .section-title em::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: .02em;
+  left: 0;
+  height: .085em;
+  background: #ef855d;
+  transform: rotate(-2deg);
+}
+
+/* ── PROJECT CARDS · SHORTER ──
+   Two fixes buy the height back. The copy block inherited align-items:end from
+   an older rule, so its children shrank to fit and were pushed 72px off the
+   left edge; and the stack sat on its own row. Badge and stack now share the
+   first line, and everything stretches to the full width again. */
+.projects .project-card--preview.project-card--sheet .project-preview-copy {
+  align-items: stretch;
+  gap: 9px;
+  padding: 12px 15px 14px;
+}
+.projects .project-card--preview.project-card--sheet .project-card__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.projects .project-card--preview.project-card--sheet .project-preview-tags {
+  justify-content: flex-end;
+  gap: 5px;
+}
+.projects .project-card--preview.project-card--sheet .project-preview-tags span {
+  padding: 3px 8px;
+  font-size: .645rem;
+}
+.projects .project-card--preview.project-card--sheet .project-preview-copy h3 {
+  margin-top: 0;
+  font-size: clamp(.98rem, 1.15vw, 1.14rem);
+}
+.projects .project-card--preview.project-card--sheet .project-card__line {
+  margin-top: 4px;
+  font-size: .765rem;
+}
+/* 2:1 instead of 16:9. The previews are top-aligned page screenshots, so the
+   strip this trims is the empty bottom of each page. */
+.projects .project-card--preview.project-card--sheet .project-preview {
+  aspect-ratio: 2 / 1;
+}
+
+/* ── LEARNING HIGHLIGHTS · CENTRED COLUMN ──
+   The grid ran two wide columns edge to edge and the right-hand "Valid until"
+   text was being cut off at the viewport. One narrow centred column instead. */
+.awards {
+  min-height: 0;
+}
+.awards .section-block {
+  padding-top: clamp(46px, 5.5vh, 66px);
+  padding-bottom: clamp(46px, 5.5vh, 66px);
+}
+.awards .section-shell--medium {
+  width: min(720px, calc(100% - 48px));
+}
+.award-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+.award-item {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  text-align: left;
+}
+.award-item h3 { font-size: .96rem; line-height: 1.25; }
+.award-item p { margin-top: 3px; font-size: .78rem; }
+.award-year { font-size: .68rem; white-space: nowrap; }
+.award-icon { width: 30px; height: 30px; font-size: .72rem; }
+
+/* ── CONTACT · SHORTER ── */
+.contact.contact--simple {
+  min-height: 0;
+}
+.contact-simple {
+  padding-top: clamp(52px, 6vh, 74px);
+  padding-bottom: clamp(34px, 4vh, 48px);
+}
+.contact-simple__intro p {
+  font-size: .86rem;
+}
+.contact-simple__footer {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  /* 8 · The bar is on screen from the top now, and the corner notes started at
+         52px — eight pixels behind it. Everything in the hero head moves down
+         to clear it. */
+  .hero__corner-note { top: 78px; }
+  .hero__bg-text { top: 30% !important; }
+
+  .awards .section-shell--medium,
+  .contact-simple { width: min(560px, calc(100% - 36px)); }
+  .award-item {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: 4px;
+  }
+  .award-year { grid-column: 2; }
+}
+
+/* ══ TINGGI SECTION ══ */
+
+/* min-height sat on the inner shell too, so zeroing it on the section alone
+   left contact at a full viewport with 305px of content inside it. */
+.contact-simple { min-height: 0; }
+
+/* Projects: 62px of shell padding plus 46px of margins between the three
+   blocks was 170px of air around the cards. */
+.projects .section-shell { padding-top: 40px; padding-bottom: 40px; }
+.projects .project-tabs { margin-top: 16px; }
+.projects .project-index__row--tabbed { margin-top: 16px; }
+.projects .project-tab { padding-top: 13px; padding-bottom: 13px; }

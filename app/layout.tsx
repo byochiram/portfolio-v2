@@ -7,7 +7,7 @@ import "./globals.css";
 // configured instead. Set NEXT_PUBLIC_SITE_URL once the site is deployed; the
 // fallback only keeps metadata valid while it is not.
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://portfolio-v2-byochiram.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://kakros.id";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -42,7 +42,7 @@ export const metadata: Metadata = (() => {
 
   return {
     metadataBase: siteUrl,
-    title: "Rosidah Rahmati | Software Developer",
+    title: "Rosidah Rahmati | Portfolio",
     description:
       "Portfolio of Rosidah Rahmati, an Informatics fresh graduate in Batam who builds practical web-based systems and software products.",
     authors: [{ name: "Rosidah Rahmati" }],
@@ -55,7 +55,7 @@ export const metadata: Metadata = (() => {
       "Web Developer",
     ],
     openGraph: {
-      title: "Rosidah Rahmati | Software Developer",
+      title: "Rosidah Rahmati | Portfolio",
       description: "Fresh graduate. Practical builder. Open to entry-level IT opportunities.",
       type: "website",
       url: siteUrl,
@@ -63,7 +63,7 @@ export const metadata: Metadata = (() => {
     },
     twitter: {
       card: "summary_large_image",
-      title: "Rosidah Rahmati | Software Developer",
+      title: "Rosidah Rahmati | Portfolio",
       description: "Fresh graduate. Practical builder. Open to entry-level IT opportunities.",
       images: [socialImage],
     },

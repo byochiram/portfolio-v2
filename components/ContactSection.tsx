@@ -32,8 +32,9 @@ function ContactSection({ copy }: { copy: Copy }) {
     <section id="contact" className="contact contact--simple" data-reveal>
       <div className="section-shell section-block contact-simple">
         <header className="contact-simple__intro">
-          <div className="section-label">{copy.contactLabel}</div>
-          <h2 className="section-title">{copy.contactTitle}</h2>
+          <h2 className="section-title">
+            Let&apos;s <em>connect.</em>
+          </h2>
           <p>{copy.contactBody}</p>
         </header>
 
@@ -55,9 +56,10 @@ function ContactSection({ copy }: { copy: Copy }) {
           ))}
         </div>
 
+        {/* One centred line. With the second span gone there is nothing left
+            for a two-column split to balance against. */}
         <footer className="contact-simple__footer">
           <span>© 2026 Rosidah Rahmati</span>
-          <span>Open to entry-level IT opportunities</span>
         </footer>
       </div>
     </section>

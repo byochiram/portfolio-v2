@@ -181,8 +181,11 @@ function ProjectsSection({ copy }: { copy: Copy }) {
       <div className="section-shell section-block">
         <div className="section-heading section-heading--split">
           <div>
-            <div className="section-label">{copy.projectsLabel}</div>
-            <h2 className="section-title">{copy.projectsTitle}</h2>
+            {/* Same shape as the other section headings: one accented word
+                carrying the orange rule underneath it. */}
+            <h2 className="section-title">
+              Selected <em>projects</em>
+            </h2>
           </div>
           <p className="section-kicker">
             Web systems, playable experiments, and data work—switch between tracks to explore each.
@@ -249,18 +252,22 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                 </div>
 
                 <div className="project-preview-copy">
-                  <div>
+                  {/* Badge and stack share the first line, which buys back a
+                      whole row of card height. */}
+                  <div className="project-card__head">
                     <span className="project-kind">{project.badge}</span>
+                    <div className="project-preview-tags">
+                      {/* Three, so the database shows next to the language and framework. */}
+                      {project.tags.slice(0, 3).map((tag) => (
+                        <span key={tag}>{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
                     <h3>{project.title}</h3>
                     {/* One plain line of context, so a card says what the thing
                         is without needing the modal opened first. */}
                     <p className="project-card__line">{project.subtitle}</p>
-                  </div>
-                  <div className="project-preview-tags">
-                    {/* Three, so the database shows next to the language and framework. */}
-                    {project.tags.slice(0, 3).map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
                   </div>
                 </div>
               </button>

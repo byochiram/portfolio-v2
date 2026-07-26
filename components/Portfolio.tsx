@@ -15,6 +15,7 @@ const navItems = [
   ["about", "About"],
   ["skills", "Stack"],
   ["projects", "Projects"],
+  ["awards", "Highlights"],
   ["contact", "Contact"],
 ] as const;
 
