@@ -6838,14 +6838,26 @@ main > section {
 /* 1 · PORTFOLIO a little smaller, so it stops overpowering the name. */
 .hero__line--solid { font-size: clamp(4.6rem, 11.6vw, 11rem) !important; }
 
-/* 2 · Gap only needs to clear the head, which is narrower than the shoulders
-       — 371px pushed the words to the edges. 192px frees the R of RAHMATI. */
+/* 2 · Both words and the green share one centre line, so the inner edges of
+       ROSIDAH/RAHMATI are set by the gap alone — font size never moves them.
+       How much green the name has to clear depends on viewport HEIGHT as well
+       as width (216px at 1280x800, 260px at 1466x668, 292px at 1920x880),
+       because a taller hero drops the name deeper into the blob where it is
+       wider. No single vw figure tracks that, so the gap is tied to the
+       green's own width instead: one blob wide plus 8px. The words then land
+       just outside the shoulder at every size, and it stays ~100px tighter
+       than the 430px that flung them to the edges. */
 .hero__name-split {
-  gap: clamp(90px, 15vw, 210px);
+  gap: clamp(96px, 18.8vw, 252px);
   animation: none !important;
 }
+/* Below 900px the green grows to 40vw/72vw and the words would overflow the
+   screen if they had to clear it, so this only applies to real desktops. */
+@media (min-width: 901px) {
+  .hero__name-split { gap: calc(min(23vw, 318px) + 8px); }
+}
 .hero__name-split span {
-  font-size: clamp(2.9rem, 13vw, 5.6rem);
+  font-size: clamp(2.9rem, 13vw, 6.1rem);
   animation: none !important;
 }
 
@@ -6857,7 +6869,7 @@ main > section {
   /* Exactly one copy tall — line-height is .85, so 1em would let the next
      copy peek out below the frame. */
   height: .85em;
-  font-size: clamp(2.9rem, 13vw, 5.6rem);
+  font-size: clamp(2.9rem, 13vw, 6.1rem);
   line-height: .85;
 }
 .hero__name-reel {
@@ -6881,7 +6893,7 @@ main > section {
   /* Slightly larger type on a phone, still one line. */
   .hero__name-split { gap: clamp(10px, 3vw, 22px); }
   .hero__name-split span,
-  .hero__name-window { font-size: clamp(1.75rem, 11vw, 3.1rem); }
+  .hero__name-window { font-size: clamp(1.85rem, 11.7vw, 3.3rem); }
   .hero__line--solid { font-size: clamp(3.4rem, 20.5vw, 7.4rem) !important; }
   /* Wider green so it frames the portrait properly on a narrow screen. */
   .hero__photo-backdrop { width: 72vw !important; }
