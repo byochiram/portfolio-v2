@@ -56,9 +56,13 @@ app/globals.css
 The greeting is shown once per browser tab/session. To replay it, open DevTools and run:
 
 ```js
-sessionStorage.removeItem("portfolio-intro-seen");
+sessionStorage.removeItem("rr-intro-seen");
 location.reload();
 ```
+
+The flag is also read by a small inline script in `app/layout.tsx` before first
+paint, so a returning visitor sees the page without waiting for React to
+hydrate.
 
 ## Interaction
 
@@ -69,4 +73,27 @@ location.reload();
 
 ## Deployment
 
-Push the folder to GitHub, import the repository into Vercel, and deploy with the default Next.js settings.
+Deployed to Vercel with the default Next.js settings. Two things in this project
+need a Node runtime, so a plain static host will not do:
+
+- `next/image` optimises the hero portrait per screen size. Without a server it
+  falls back to shipping the full 923&times;1416 file to every device.
+- The `headers()` block in `next.config.ts` carries the Content-Security-Policy,
+  `Permissions-Policy` and HSTS. On a static host those headers have to be moved
+  into the host's own config instead.
+
+Steps:
+
+1. Import `byochiram/portfolio-v2` into Vercel. Framework detection picks up
+   Next.js; no build settings need changing.
+2. Add `kakros.id` under Project Settings &rarr; Domains, then point the domain's
+   DNS at Vercel as instructed there.
+3. Leave `NEXT_PUBLIC_SITE_URL` unset. `app/layout.tsx` already falls back to
+   `https://kakros.id`, so Open Graph URLs are correct without it. Only set it if
+   the domain changes, or to make previews advertise their own `vercel.app` URL.
+4. After the first deploy, open the site and each of the four games once and
+   check the console. The CSP also applies to the bundled game pages, and they
+   register service workers.
+
+`Strict-Transport-Security` is sent without `preload`. Add it only when you are
+sure `kakros.id` will stay HTTPS-only, because preload lists are slow to undo.

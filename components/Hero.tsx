@@ -192,7 +192,6 @@ export default function Hero({ ready }: { ready: boolean }) {
             height={1416}
             sizes="(max-width: 700px) 74vw, (max-width: 1100px) 42vw, 30vw"
             priority
-            quality={82}
           />
         </div>
       </div>
