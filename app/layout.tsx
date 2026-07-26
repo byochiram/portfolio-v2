@@ -2,9 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Manrope, Anton } from "next/font/google";
 import "./globals.css";
 
-// Static site URL. Reading request headers here would opt the whole route out of
-// static generation, so the origin is configured instead of derived per request.
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://portfolio-v2-byochiram.vercel.app";
+// Public origin, used for Open Graph / Twitter card URLs. Deriving it from
+// request headers would opt the whole route out of static generation, so it is
+// configured instead. Set NEXT_PUBLIC_SITE_URL once the site is deployed; the
+// fallback only keeps metadata valid while it is not.
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://portfolio-v2-byochiram.vercel.app";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],

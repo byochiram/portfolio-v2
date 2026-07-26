@@ -5580,231 +5580,6 @@ main > section {
 }
 
 /* Organic transitions between sections */
-.sxn {
-  position: relative;
-  z-index: 9;
-  width: 100%;
-  height: 92px;
-  overflow: hidden;
-  pointer-events: none;
-}
-.sxn__kicker {
-  position: absolute;
-  z-index: 4;
-  left: max(24px, calc((100% - 1180px) / 2));
-  bottom: 18px;
-  color: rgba(23, 52, 59, .58);
-  font-size: 8px;
-  font-weight: 850;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-}
-.sxn--diagonal {
-  margin-top: -1px;
-  background: #f5f1e8;
-}
-.sxn--diagonal .sxn__slab {
-  position: absolute;
-  inset: 0;
-  background: #edf2e9;
-  clip-path: polygon(0 64%, 100% 12%, 100% 100%, 0 100%);
-}
-.sxn__diagline {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.sxn__diagline line {
-  stroke: rgba(42, 116, 108, .38);
-  stroke-width: 1.2;
-  stroke-dasharray: 8 10;
-}
-.sxn__rings {
-  position: absolute;
-  z-index: 2;
-  right: 9%;
-  bottom: 10px;
-  width: 72px;
-  height: 72px;
-}
-.sxn__rings i {
-  position: absolute;
-  inset: calc(var(--ring, 0) * 9px);
-  border: 1px solid rgba(42, 116, 108, .18);
-  border-radius: 50%;
-}
-.sxn__rings i:nth-child(1) { --ring: 0; }
-.sxn__rings i:nth-child(2) { --ring: 1; }
-.sxn__rings i:nth-child(3) { --ring: 2; }
-.sxn__rings i:nth-child(4) {
-  --ring: 3;
-  border-color: #c98224;
-  background: #c98224;
-}
-
-.sxn--wave {
-  height: 108px;
-  margin-top: -1px;
-  background: #edf2e9;
-}
-.sxn__wave {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.sxn__wave-fill {
-  fill: #0c2429;
-}
-.sxn__wave-line {
-  fill: none;
-  stroke: rgba(239, 189, 89, .72);
-  stroke-width: 1.5;
-}
-.sxn__wave-bead {
-  fill: #efbd59;
-}
-.sxn--wave .sxn__kicker {
-  bottom: 11px;
-  color: rgba(244, 239, 230, .58);
-}
-
-.sxn--marquee {
-  height: 78px;
-  margin-top: -1px;
-  background: linear-gradient(180deg, #0c2429 0 50%, #dce9eb 50%);
-}
-.sxn__marquee {
-  position: absolute;
-  z-index: 2;
-  top: 12px;
-  left: -2%;
-  width: 104%;
-  overflow: hidden;
-  border-top: 1px solid rgba(23, 52, 59, .42);
-  border-bottom: 1px solid rgba(23, 52, 59, .42);
-  background: #efbd59;
-  transform: rotate(-1deg);
-}
-.sxn__marq-track {
-  display: flex;
-  width: max-content;
-  animation: sxnMarquee 25s linear infinite;
-}
-.sxn__marq-group {
-  display: flex;
-}
-.sxn__marq-group b {
-  position: relative;
-  padding: 10px 27px;
-  color: #17343b;
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-}
-.sxn__marq-group b::after {
-  content: "•";
-  position: absolute;
-  right: -2px;
-  color: #2a746c;
-}
-@keyframes sxnMarquee {
-  to { transform: translateX(-50%); }
-}
-
-.sxn--seal {
-  height: 96px;
-  margin-top: -1px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(180deg, #dce9eb 0 48%, #f2e6d4 48%);
-}
-.sxn__rule {
-  width: min(34vw, 430px);
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(23, 52, 59, .38));
-}
-.sxn__rule--right {
-  background: linear-gradient(90deg, rgba(23, 52, 59, .38), transparent);
-}
-.sxn__seal {
-  position: relative;
-  width: 62px;
-  height: 62px;
-  margin: 0 16px;
-  border: 1px solid rgba(23, 52, 59, .35);
-  border-radius: 50%;
-  background: #f2e6d4;
-}
-.sxn__seal::before,
-.sxn__seal::after {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border: 1px dashed rgba(42, 116, 108, .42);
-  border-radius: 50%;
-}
-.sxn__seal::after {
-  inset: 20px;
-  border: 0;
-  background: #2a746c;
-}
-.sxn--seal .sxn__kicker {
-  left: 50%;
-  bottom: 4px;
-  transform: translateX(-50%);
-}
-
-.sxn--converge {
-  height: 112px;
-  margin-top: -1px;
-  background: #f2e6d4;
-}
-.sxn--converge::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: #0d2927;
-  clip-path: polygon(0 100%, 0 78%, 50% 24%, 100% 78%, 100% 100%);
-}
-.sxn__converge {
-  position: absolute;
-  z-index: 3;
-  inset: 0;
-}
-.sxn__converge i {
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  width: 1px;
-  height: 86px;
-  background: rgba(201, 130, 36, .48);
-  transform-origin: bottom;
-}
-.sxn__converge i:nth-child(1) { transform: translateX(-50%) rotate(-64deg); }
-.sxn__converge i:nth-child(2) { transform: translateX(-50%) rotate(-34deg); }
-.sxn__converge i:nth-child(3) { transform: translateX(-50%); }
-.sxn__converge i:nth-child(4) { transform: translateX(-50%) rotate(34deg); }
-.sxn__converge i:nth-child(5) { transform: translateX(-50%) rotate(64deg); }
-.sxn__converge b {
-  position: absolute;
-  left: 50%;
-  top: 19px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: #efbd59;
-  transform: translateX(-50%);
-  box-shadow: 0 0 0 7px rgba(239, 189, 89, .13);
-}
-.sxn--converge .sxn__kicker {
-  z-index: 4;
-  bottom: 8px;
-  color: rgba(244, 239, 230, .58);
-}
 
 /* Hero / warm paper and green orbital details */
 .hero {
@@ -6151,30 +5926,12 @@ main > section {
 }
 
 @media (max-width: 700px) {
-  .sxn {
-    height: 68px;
-  }
-  .sxn--wave,
-  .sxn--converge {
-    height: 78px;
-  }
-  .sxn__kicker {
-    left: 16px;
-    bottom: 9px;
-    font-size: 6px;
-  }
-  .sxn__rings {
-    right: 4%;
-    width: 50px;
-    height: 50px;
-  }
-  .sxn__marquee {
-    top: 10px;
-  }
-  .sxn__marq-group b {
-    padding: 8px 18px;
-    font-size: 8px;
-  }
+  
+  
+  
+  
+  
+  
   .about__shell {
     min-height: auto;
   }
@@ -6230,18 +5987,6 @@ main > section {
     align-items: flex-start;
     flex-direction: column;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .sxn__marq-track,
-  .skills.skills--flow {
-    animation: none;
-  }
-}
-
-/* ── FINAL RESPONSIVE RHYTHM / SEAMLESS SECTION HANDOFFS ── */
-.sxn {
-  display: none !important;
 }
 
 .about,
@@ -6652,10 +6397,6 @@ main > section {
 /* ── PERFORMANCE ── stop compositing work that nobody can see ──
    Sections are flagged .is-offscreen by an IntersectionObserver in Portfolio.tsx.
    Defaulting to "running" keeps animations working even if JS never runs. */
-main > section.is-offscreen *,
-main > .sxn.is-offscreen * {
-  animation-play-state: paused !important;
-}
 
 /* Marquees only need to move while the pointer is away; pausing on hover also
    lets people actually read them. */

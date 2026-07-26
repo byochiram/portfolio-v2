@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { portfolio } from "@/data/portfolio";
 import Hero from "@/components/Hero";
 import Intro from "@/components/Intro";
-import SectionDivider from "@/components/SectionDivider";
 import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
@@ -120,9 +119,7 @@ export default function Portfolio() {
   // Infinite marquees/orbits are expensive to keep compositing, so anything
   // scrolled out of view is flagged and paused via CSS until it returns.
   useEffect(() => {
-    const blocks = Array.from(
-      document.querySelectorAll<HTMLElement>("main > section, main > .sxn")
-    );
+    const blocks = Array.from(document.querySelectorAll<HTMLElement>("main > section"));
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -217,17 +214,11 @@ export default function Portfolio() {
 
       <main>
         <Hero ready={!showIntro} />
-        <SectionDivider label="Profile" variant="diagonal" />
         <AboutSection copy={copy} />
-        <SectionDivider label="Stack" variant="wave" />
         <SkillsSection copy={copy} />
-        <SectionDivider label="Selected work" variant="marquee" />
         <ProjectsSection copy={copy} />
-        <SectionDivider label="Experience" variant="timeline" />
         <ExperienceSection copy={copy} />
-        <SectionDivider label="Credentials" variant="seal" />
         <AwardsSection copy={copy} />
-        <SectionDivider label="Let's talk" variant="converge" />
         <ContactSection copy={copy} />
       </main>
 

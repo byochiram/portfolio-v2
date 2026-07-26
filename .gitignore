@@ -33,3 +33,6 @@ yarn-error.log*
 # editor / tooling
 .idea/
 *.swp
+
+# folder kerja lokal untuk drop logo
+/logo-drop
