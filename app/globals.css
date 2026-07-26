@@ -6772,3 +6772,17 @@ main > section {
   white-space: nowrap;
   cursor: pointer;
 }
+
+/* Link to the certificate scan, opened in its own tab. */
+.award-link {
+  color: #237169;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(35, 113, 105, .3);
+  transition: border-color .2s ease;
+  white-space: nowrap;
+}
+.award-link:hover { border-bottom-color: #237169; }
+.award-link:focus-visible { outline: 2px solid #237169; outline-offset: 2px; border-radius: 3px; }
+.dark .award-link { color: #5fae99; border-bottom-color: rgba(95, 174, 153, .35); }
+.dark .award-link:hover { border-bottom-color: #5fae99; }

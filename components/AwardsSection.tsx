@@ -13,13 +13,34 @@ function AwardsSection({ copy }: { copy: Copy }) {
           <div className="section-label">{copy.awardsLabel}</div>
           <h2 className="section-title">{copy.awardsTitle}</h2>
         </div>
+
         <div className="award-grid">
           {portfolio.awards.map((award, index) => (
-            <article className="award-item" key={award.title} style={{ transitionDelay: `${index * 70}ms` }}>
+            <article
+              className="award-item"
+              key={award.title}
+              style={{ transitionDelay: `${index * 70}ms` }}
+            >
               <div className="award-icon">★</div>
               <div>
                 <h3>{award.title}</h3>
-                <p>{award.issuer}</p>
+                <p>
+                  {award.issuer}
+                  {award.image && (
+                    <>
+                      {" · "}
+                      {/* Opens the scan in its own tab rather than in the page. */}
+                      <a
+                        className="award-link"
+                        href={award.image}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View certificate ↗
+                      </a>
+                    </>
+                  )}
+                </p>
               </div>
               <span className="award-year">{award.year}</span>
             </article>

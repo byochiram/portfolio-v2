@@ -41,4 +41,4 @@ yarn-error.log*
 /dashboard-drop
 
 # sertifikat: berisi data pribadi, jangan pernah masuk repo
-/public/sertifikat
+/_originals

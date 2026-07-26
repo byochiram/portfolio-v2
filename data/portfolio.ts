@@ -791,9 +791,9 @@ export const portfolio = {
     },
   ] satisfies Project[],
   awards: [
-    { title: "Alibaba Cloud Certified Associate", issuer: "Alibaba Cloud", year: "Valid until Nov 2026" },
-    { title: "Next Generation ECS and OSS Technologies", issuer: "Alibaba Cloud · Apsara Conference 2021", year: "Valid until Nov 2026" },
-    { title: "Database Design", issuer: "Oracle Academy", year: "Course Certificate" },
-    { title: "Database Programming with SQL", issuer: "Oracle Academy", year: "Course Certificate" },
+    { title: "Alibaba Cloud Certified Associate", issuer: "Alibaba Cloud", year: "Valid until Nov 2026",  image: "/certificates/alibaba-aca.ec7c0f4b.webp" },
+    { title: "Next Generation ECS and OSS Technologies", issuer: "Alibaba Cloud · Apsara Conference 2021", year: "Valid until Nov 2026",  image: "/certificates/apsara-2021.44dfce82.webp" },
+    { title: "Database Design", issuer: "Oracle Academy", year: "Course Certificate",  image: "/certificates/oracle-db-design.7f52855c.webp" },
+    { title: "Database Programming with SQL", issuer: "Oracle Academy", year: "Course Certificate",  image: "/certificates/oracle-db-sql.adae0bf4.webp" },
   ],
 };
