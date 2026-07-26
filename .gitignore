@@ -36,3 +36,6 @@ yarn-error.log*
 
 # folder kerja lokal untuk drop logo
 /logo-drop
+
+# folder kerja lokal untuk drop dashboard
+/dashboard-drop
