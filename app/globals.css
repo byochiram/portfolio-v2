@@ -6831,19 +6831,47 @@ main > section {
 .hero__space-tag,
 .hero__comet { display: none !important; }
 
-/* The name drifts slowly in opposite directions, so the two halves breathe
-   around the portrait instead of sitting still. Transform only, so it stays
-   on the compositor — and it pauses with the section when scrolled away. */
-.hero__name-split span:first-child { animation: heroNameDriftUp 7s ease-in-out infinite; }
-.hero__name-split span:last-child  { animation: heroNameDriftDown 7s ease-in-out infinite; }
-@keyframes heroNameDriftUp {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-14px); }
+
+
+/* ══ HERO TUNING ══ */
+
+/* 1 · PORTFOLIO a little smaller, so it stops overpowering the name. */
+.hero__line--solid { font-size: clamp(4.6rem, 11.6vw, 11rem) !important; }
+
+/* 2 · Name larger, and pushed far enough apart that the portrait's shoulders
+       sit inside the gap instead of clipping the R of RAHMATI. */
+.hero__name-split {
+  gap: clamp(120px, 29vw, 430px);
+  animation: heroNameStep 9s ease-in-out infinite;
 }
-@keyframes heroNameDriftDown {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(14px); }
+.hero__name-split span {
+  font-size: clamp(2.9rem, 13vw, 5.6rem);
+  animation: none !important;   /* both words move together, not separately */
 }
+
+/* 3 · Same stepped vertical rhythm as the original marquee: it holds, shifts,
+       holds again — both words as one block. */
+@keyframes heroNameStep {
+  0%, 12%   { transform: translateY(0); }
+  28%, 40%  { transform: translateY(-11px); }
+  56%, 68%  { transform: translateY(-22px); }
+  88%, 100% { transform: translateY(0); }
+}
+
+/* 4 · Bolder green behind the portrait — the same tone as the About cards. */
+.hero__photo-backdrop { background: #2a746c !important; }
+.dark .hero__photo-backdrop { background: #235f58 !important; }
+
+@media (max-width: 700px) {
+  /* 5 · Sit the wordmark midway between the top labels and the head. */
+  .hero__bg-text { top: 26% !important; }
+  /* 2b · Keep one line on a phone: gap shrinks instead of the words wrapping. */
+  .hero__name-split { gap: clamp(8px, 2.6vw, 18px); }
+  .hero__name-split span { font-size: clamp(1.55rem, 9.6vw, 2.7rem); }
+  /* 6 · Wider green so it frames the portrait properly on a narrow screen. */
+  .hero__photo-backdrop { width: 72vw !important; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero__name-split span { animation: none !important; }
+  .hero__name-split { animation: none; }
 }
