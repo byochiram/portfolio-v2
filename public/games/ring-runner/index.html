@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<title>PESAWAT — Ring Runner (WebGL Game)</title>
+
+<!-- PWA -->
+<meta name="theme-color" content="#1864ab" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Ring Runner" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon-192.png" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: #bfe1ff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  #app { position: fixed; inset: 0; touch-action: none; }
+  canvas { display: block; }
+
+  .ui { position: fixed; z-index: 10; color: #0b2540;
+    -webkit-user-select: none; user-select: none; pointer-events: none; }
+
+  /* ---------- HUD ---------- */
+  #hud { top: 16px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #score { font-size: 54px; font-weight: 800; line-height: 1; color: #0b2540;
+    text-shadow: 0 2px 10px rgba(255,255,255,.6), 0 1px 0 #fff; }
+  #best { font-size: 13px; font-weight: 600; opacity: .7; }
+  #combo { font-size: 13px; font-weight: 700; color: #e8590c; min-height: 16px; }
+  #speedWrap { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700;
+    letter-spacing: 1px; opacity: .75; }
+  #speedBar { width: 160px; height: 7px; border-radius: 4px; background: rgba(11,37,64,.15); overflow: hidden; }
+  #speedFill { display: block; height: 100%; width: 20%;
+    background: linear-gradient(90deg,#37b24d,#f59f00,#e03131); transition: width .12s linear; }
+
+  #btnMute { top: 16px; right: 16px; pointer-events: auto; }
+  .iconbtn { font: inherit; font-size: 18px; line-height: 1; cursor: pointer;
+    background: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.85);
+    border-radius: 10px; padding: 8px 10px; box-shadow: 0 4px 14px rgba(11,37,64,.12); }
+  .iconbtn:active { transform: translateY(1px); }
+  #zoomBtns { top: 62px; right: 16px; display: flex; flex-direction: column; gap: 8px; pointer-events: auto; }
+  #score.pop { animation: scorePop .3s ease; }
+  @keyframes scorePop { 0%{ transform: scale(1); } 40%{ transform: scale(1.42); color:#2f9e44; } 100%{ transform: scale(1); } }
+
+  /* ---------- Overlays ---------- */
+  .overlay { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center;
+    padding: 20px; background: rgba(12,26,48,.28); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+    pointer-events: auto; }
+  .overlay.hidden { display: none; }
+  .panel { width: 100%; max-width: 380px; text-align: center; color: #0b2540;
+    background: rgba(255,255,255,.9); border: 1px solid rgba(255,255,255,.9);
+    border-radius: 20px; padding: 28px 26px; box-shadow: 0 20px 60px rgba(11,37,64,.28); }
+  .panel h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+  .panel .sub { font-size: 14px; opacity: .8; margin-bottom: 16px; line-height: 1.5; }
+  .keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; text-align: left;
+    font-size: 13px; margin: 4px auto 20px; width: fit-content; }
+  .keys b { text-align: right; }
+  kbd { font-family: inherit; font-size: 12px; background: #0b2540; color: #fff;
+    border-radius: 5px; padding: 2px 7px; margin: 0 1px; }
+  .cta { font: inherit; font-size: 17px; font-weight: 800; cursor: pointer; color: #fff;
+    background: linear-gradient(180deg,#1c7ed6,#1864ab); border: 0; border-radius: 12px;
+    padding: 13px 28px; box-shadow: 0 8px 22px rgba(24,100,171,.4); transition: transform .06s; }
+  .cta:hover { filter: brightness(1.06); }
+  .cta:active { transform: translateY(2px); }
+  .bigscore { margin: 8px 0 2px; }
+  .bigscore span { font-size: 60px; font-weight: 800; color: #1864ab; }
+  .bigscore small { font-size: 15px; opacity: .7; margin-left: 6px; }
+  #bestLine { font-size: 14px; opacity: .8; margin-bottom: 18px; }
+  .foot { font-size: 11px; opacity: .55; margin-top: 16px; }
+
+  #flash { position: fixed; inset: 0; z-index: 25; pointer-events: none;
+    background: #ff2d2d; opacity: 0; transition: opacity .08s; }
+
+  #loading { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center;
+    background: #bfe1ff; color: #0b2540; font-size: 14px; letter-spacing: .5px; }
+
+  @media (max-width: 520px){
+    #score { font-size: 42px; }
+    .panel h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div id="loading">Memuat game…</div>
+
+  <div id="hud" class="ui">
+    <div id="score">0</div>
+    <div id="best">Terbaik: 0</div>
+    <div id="combo"></div>
+    <div id="speedWrap"><span>KECEPATAN</span><div id="speedBar"><i id="speedFill"></i></div></div>
+  </div>
+
+  <button id="btnMute" class="ui iconbtn" title="Suara on/off">🔊</button>
+  <div id="zoomBtns" class="ui">
+    <button id="btnZoomIn" class="iconbtn" title="Zoom in">➕</button>
+    <button id="btnZoomOut" class="iconbtn" title="Zoom out">➖</button>
+  </div>
+
+  <div id="flash"></div>
+
+  <div id="startScreen" class="overlay">
+    <div class="panel">
+      <h1>✈️ Ring Runner</h1>
+      <p class="sub">Terbangkan pesawat menembus <b>setiap</b> lingkaran.<br>
+        Tiap lingkaran +1 poin &amp; makin cepat. Meleset = tamat!</p>
+      <div class="keys">
+        <b><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></b><span>atau ← ↑ ↓ → untuk kemudi</span>
+        <b>🖱️ / 👆</b><span>tahan &amp; geser juga bisa</span>
+        <b>Scroll / ➕➖</b><span>zoom in &amp; out</span>
+      </div>
+      <button id="btnStart" class="cta">▶ Mulai</button>
+    </div>
+  </div>
+
+  <div id="overScreen" class="overlay hidden">
+    <div class="panel">
+      <h1>💥 Menabrak!</h1>
+      <div class="bigscore"><span id="finalScore">0</span><small>poin</small></div>
+      <p id="bestLine">Terbaik: 0</p>
+      <button id="btnRestart" class="cta">🔄 Main lagi</button>
+    </div>
+  </div>
+
+  <script src="three.min.js"></script>
+  <script src="BufferGeometryUtils.js"></script>
+  <script>
+  (function () {
+    "use strict";
+
+    // ------------------------------------------------------------------
+    //  Konstanta scene (dari main.cpp)
+    // ------------------------------------------------------------------
+    const EN_SIZE = 30;
+    const ZOOM = 4;                 // glScaled(zoom, zoom, zoom)
+    const rArr = [0.1,0.4,0.0,0.9,0.2,0.5,0.0,0.7,0.5,0.0];
+    const gArr = [0.2,0.0,0.4,0.5,0.2,0.0,0.3,0.9,0.0,0.2];
+    const bArr = [0.4,0.5,0.0,0.7,0.9,0.0,0.1,0.2,0.5,0.0];
+    const torusPosX = [2,-2,3,-8,-4,0,8];
+    const torusPosY = [2, 3,10, 6, 7,4,2];
+
+    // Warna komponen pesawat
+    const YELLOW  = 0xffd21e;
+    const GRAY    = 0x8a9099;
+    const BLACK   = 0x11151b;
+    const WHITE   = 0xf2f4f7;
+    const MAGENTA = 0xd63cff;
+    const GROUND  = 0x2f9e44;   // (0, 0.5, 0.1) hijau rumput
+    const RING    = 0x2fe06a;   // (0, 1, 0.1) hijau torus
+
+    // ------------------------------------------------------------------
+    //  Matrix-stack ala OpenGL immediate mode
+    // ------------------------------------------------------------------
+    let stack = [new THREE.Matrix4()];
+    const M4 = () => new THREE.Matrix4();
+    const top = () => stack[stack.length - 1];
+    const push = () => stack.push(top().clone());
+    const pop  = () => stack.pop();
+    const T = (x,y,z) => top().multiply(M4().makeTranslation(x,y,z));
+    const S = (x,y,z) => top().multiply(M4().makeScale(x,y,z));
+    const R = (deg,x,y,z) =>
+      top().multiply(M4().makeRotationAxis(new THREE.Vector3(x,y,z).normalize(), deg*Math.PI/180));
+
+    // Geometry factory — menghasilkan BufferGeometry di posisi matrix saat ini
+    function gCube(size){ const g = new THREE.BoxGeometry(size,size,size); g.applyMatrix4(top()); return g; }
+    function gSphere(r){ const g = new THREE.SphereGeometry(r, 22, 16); g.applyMatrix4(top()); return g; }
+    function gTorus(inner, outer){ const g = new THREE.TorusGeometry(outer, inner, 16, 34); g.applyMatrix4(top()); return g; }
+    // gluCylinder(base, top, height): dari z=0 (radius base) ke z=+height (radius top), sepanjang +Z
+    function gCyl(base, topR, h){
+      const g = new THREE.CylinderGeometry(topR, base, h, 40, 1, false);
+      g.applyMatrix4(M4().makeRotationX(Math.PI/2)); // +Y -> +Z
+      g.applyMatrix4(M4().makeTranslation(0,0,h/2)); // base ke z=0
+      g.applyMatrix4(top());
+      return g;
+    }
+
+    // ------------------------------------------------------------------
+    //  PESAWAT  (plane / body / mesin / sayap)
+    // ------------------------------------------------------------------
+    let buckets = {};
+    function add(color, geo){ (buckets[color] || (buckets[color] = [])).push(geo); }
+
+    function sayapDepan(color){
+      push(); T(-3.85,0,2.25); R(17,0,1,0); S(0.35,0.05,2.3); R(-5,0,1,0); add(color, gCube(2)); pop();
+      push(); T(-3.04,0,2.25); R( 1,0,1,0); S(0.25,0.05,2.3);            add(color, gCube(2)); pop();
+      push(); T(-3.58,0,1.6 ); R( 5,0,1,0); S(0.4 ,0.05,1.5);            add(color, gCube(2)); pop();
+      push(); T(-3.328,0,4.282); R(-28,0,1,0); S(0.205,0.05,0.2);        add(color, gCube(2)); pop();
+    }
+    function sayapBelakangH(color){
+      push();
+        S(0.5,0.5,0.5); S(1,1,0.7);
+        push(); T(-0.85,0,2.25); R(17,0,1,0); S(0.35,0.05,2.3); R(-5,0,1,0); add(color, gCube(2)); pop();
+        push(); T(-0.04,0,2.25); R( 5,0,1,0); S(0.4 ,0.05,2.3);            add(color, gCube(2)); pop();
+        push(); T(-0.58,0,1.6 ); R( 5,0,1,0); S(0.4 ,0.05,1.5);            add(color, gCube(2)); pop();
+        push(); T(-0.32,0,4.3 ); R(-30,0,1,0); S(0.21,0.05,0.2);           add(color, gCube(2)); pop();
+      pop();
+    }
+    function bodyPesawat(){
+      push(); T(-2.36,0,0); R(90,0,1,0); add(GRAY, gCyl(0.7,0.07,5)); pop();
+      push(); T(-6.35,0,0); R(90,0,1,0); add(GRAY, gCyl(0.7,0.7 ,4)); pop();
+      push(); T(-8.35,0,0); R(90,0,1,0); add(GRAY, gCyl(0.2,0.7 ,2)); pop();
+      push(); T(-8.25,0,0); S(1.5,1,1  ); add(GRAY,  gSphere(0.2)); pop();
+      push(); T(-7.5,0.2,0); S(1.5,1,1.4); add(BLACK, gSphere(0.3)); pop();
+    }
+    function mesin(){
+      push(); T(-2,0,1.5); R(90,0,1,0); S(0.1,0.1,1); add(WHITE,   gTorus(1,1)); pop();
+      push(); T(-2,0,1  );              S(0.6,0.05,0.5); add(MAGENTA, gCube(2)); pop();
+    }
+
+    function buildPlane(){
+      buckets = {};
+      stack = [new THREE.Matrix4()];
+      push();
+        R(180,0,1,0); S(0.5,0.5,0.5);
+        // sayap depan (kuning) + cermin
+        push(); T(1,-0.35,0); sayapDepan(YELLOW); R(180,1,0,0); sayapDepan(YELLOW); pop();
+        // sayap belakang horizontal + cermin
+        push(); T(2.83,1.25,0); sayapBelakangH(YELLOW); R(180,1,0,0); sayapBelakangH(YELLOW); pop();
+        // badan
+        bodyPesawat();
+        // mesin + cermin
+        push(); mesin(); R(180,1,0,0.007); mesin(); pop();
+      pop();
+
+      const group = new THREE.Group();
+      for (const hex in buckets){
+        const merged = THREE.BufferGeometryUtils.mergeBufferGeometries(buckets[hex], false);
+        const mat = new THREE.MeshPhongMaterial({
+          color: parseInt(hex,10), shininess: 70, specular: 0x333333
+        });
+        group.add(new THREE.Mesh(merged, mat));
+      }
+      return group;
+    }
+
+    // ------------------------------------------------------------------
+    //  ENVIRONMENT (ground + torus + rumah "tola")
+    // ------------------------------------------------------------------
+    // PRNG deterministik supaya pola kota konsisten tiap load
+    function mulberry32(a){
+      return function(){
+        a |= 0; a = a + 0x6D2B79F5 | 0;
+        let t = Math.imul(a ^ a >>> 15, 1 | a);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    // isi tinggi rumah (hanya kolom |i| > 10, seperti di main.cpp -> lorong tengah kosong)
+    const rand = mulberry32(20240525);
+    const tola = {};
+    const half = EN_SIZE / 2;
+    for (let i = -half + 1; i < half; i += 2){
+      for (let j = -half + 1; j < half; j += 2){
+        if (i >= -10 && i <= 10) continue;      // koridor tengah tetap kosong
+        tola[i + "," + j] = 1 + Math.floor(rand() * 5);
+      }
+    }
+    const mod9 = (x) => ((x % 9) + 9) % 9;
+
+    function pushColoredCube(size, colGeos, hex){
+      const g = gCube(size);
+      const c = new THREE.Color(hex);
+      const n = g.attributes.position.count;
+      const arr = new Float32Array(n * 3);
+      for (let k = 0; k < n; k++){ arr[3*k]=c.r; arr[3*k+1]=c.g; arr[3*k+2]=c.b; }
+      g.setAttribute("color", new THREE.BufferAttribute(arr, 3));
+      colGeos.push(g);
+    }
+
+    function singleTolaHouse(Rc, Gc, Bc, colGeos, blackGeos){
+      const hex = new THREE.Color(rArr[mod9(Rc)], gArr[mod9(Gc)], bArr[mod9(Bc)]).getHex();
+      // kubus rumah berwarna
+      push(); pushColoredCube(1, colGeos, hex); pop();
+      // detail jendela/pintu (hitam) di 4 sisi
+      push(); T( 0.2,0,0 ); S(0.3,0.3,1.001); blackGeos.push(gCube(1)); pop();
+      push(); T(-0.2,0,0 ); S(0.3,0.3,1.001); blackGeos.push(gCube(1)); pop();
+      push(); T(0,0, 0.2 ); S(1.001,0.3,0.3); blackGeos.push(gCube(1)); pop();
+      push(); T(0,0,-0.2 ); S(1.001,0.3,0.3); blackGeos.push(gCube(1)); pop();
+    }
+    function house(n, Rc, Gc, colGeos, blackGeos){
+      for (let i = 0; i < n; i++){
+        push(); T(0, 0.8 + i, 0); singleTolaHouse(Gc, Rc, i, colGeos, blackGeos); pop();
+      }
+    }
+
+    function buildEnvTile(n, withTorus){
+      const grp = new THREE.Group();
+
+      // ground (glScaled(EN_SIZE*1.5, 0.3, EN_SIZE*1.5) * cube(1))
+      const ground = new THREE.Mesh(
+        new THREE.BoxGeometry(EN_SIZE*1.5, 0.3, EN_SIZE*1.5),
+        new THREE.MeshPhongMaterial({ color: GROUND, shininess: 8 })
+      );
+      grp.add(ground);
+
+      // torus melayang (dekoratif — dimatikan di mode game)
+      if (withTorus){
+        const torusG = new THREE.TorusGeometry(3, 1, 16, 40);
+        const tMat = new THREE.MeshPhongMaterial({ color: RING, shininess: 40 });
+        const torus = new THREE.Mesh(torusG, tMat);
+        torus.position.set(torusPosX[n], torusPosY[n], 0);
+        torus.scale.set(0.3, 0.3, 0.3);
+        grp.add(torus);
+      }
+
+      // rumah-rumah
+      const colGeos = [], blackGeos = [];
+      for (const key in tola){
+        const parts = key.split(",");
+        const i = +parts[0], j = +parts[1];
+        stack = [new THREE.Matrix4()];
+        push(); T(i, 0, j); house(tola[key], i, j, colGeos, blackGeos); pop();
+      }
+      if (colGeos.length){
+        const merged = THREE.BufferGeometryUtils.mergeBufferGeometries(colGeos, false);
+        grp.add(new THREE.Mesh(merged, new THREE.MeshPhongMaterial({ vertexColors: true, shininess: 18 })));
+      }
+      if (blackGeos.length){
+        const merged = THREE.BufferGeometryUtils.mergeBufferGeometries(blackGeos, false);
+        grp.add(new THREE.Mesh(merged, new THREE.MeshPhongMaterial({ color: BLACK, shininess: 10 })));
+      }
+      return grp;
+    }
+
+    // ------------------------------------------------------------------
+    //  SETUP THREE.JS
+    // ------------------------------------------------------------------
+    const app = document.getElementById("app");
+    const scene = new THREE.Scene();
+    const SKY = 0xbfe1ff;
+    scene.background = new THREE.Color(SKY);
+    scene.fog = new THREE.Fog(SKY, 70, 300);
+
+    const camera = new THREE.PerspectiveCamera(62, 16/9, 0.5, 2000);
+    camera.position.set(0, 6, 14);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    app.appendChild(renderer.domElement);
+
+    function currentSize(){
+      const w = app.clientWidth  || window.innerWidth  || document.documentElement.clientWidth  || 1280;
+      const h = app.clientHeight || window.innerHeight || document.documentElement.clientHeight || 720;
+      return { w, h };
+    }
+    function resize(){
+      const s = currentSize();
+      camera.aspect = s.w / s.h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(s.w, s.h, true);
+    }
+    resize();
+    if (window.ResizeObserver){ new ResizeObserver(resize).observe(app); }
+    window.addEventListener("resize", resize);
+
+    // Cahaya
+    scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+    keyLight.position.set(4, 8, 6); scene.add(keyLight);
+    const fillLight = new THREE.DirectionalLight(0xbcd6ff, 0.35);
+    fillLight.position.set(-5, 3, -6); scene.add(fillLight);
+
+    const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+
+    // ==================================================================
+    //  OBJEK: pesawat, kota (scenery), lingkaran (gate)
+    // ==================================================================
+    const PLANE_SCALE = 0.46, PLANE_Z = 0;
+    const plane = new THREE.Group();
+    const planeModel = buildPlane();
+    planeModel.rotation.y = Math.PI / 2;     // hidung menghadap -Z (arah datangnya lingkaran)
+    plane.add(planeModel);
+    plane.scale.setScalar(PLANE_SCALE);
+    scene.add(plane);
+
+    // Kota bergerak (memberi sensasi kecepatan)
+    const CITY_Y = -9, CITY_SPACING = 45, CITY_TILES = 6;
+    const cityNs = [2,3,1,5,4];
+    const city = [];
+    for (let i = 0; i < CITY_TILES; i++){
+      const tile = buildEnvTile(cityNs[i % cityNs.length], false);
+      tile.position.set(0, CITY_Y, -i * CITY_SPACING);
+      scene.add(tile);
+      city.push(tile);
+    }
+
+    // Lingkaran / gate
+    const GATE_R = 3.2, PASS_R = GATE_R - 0.3, NUM_RINGS = 7, RING_SPACING = 42;
+    const RING_COL = 0xffc233, RING_HI = 0x22e0ff, RING_OK = 0x2fe06a;
+    const ringGeo = new THREE.TorusGeometry(GATE_R, 0.3, 14, 48);
+    const rings = [];
+    for (let i = 0; i < NUM_RINGS; i++){
+      const mat = new THREE.MeshPhongMaterial({ color: RING_COL, emissive: 0x3a2600, shininess: 60 });
+      const mesh = new THREE.Mesh(ringGeo, mat);
+      scene.add(mesh);
+      rings.push({ mesh, mat, x:0, y:3, z:0, passed:false, flash:0 });
+    }
+    let lastRingX = 0, lastRingY = 3;
+    function placeRing(r, z){
+      lastRingX = clamp(lastRingX + (Math.random()*2-1)*4.5, -5.5, 5.5);
+      lastRingY = clamp(lastRingY + (Math.random()*2-1)*3.5, 0.5, 7);
+      r.x = lastRingX; r.y = lastRingY; r.z = z; r.passed = false; r.flash = 0;
+      r.mat.color.setHex(RING_COL); r.mat.emissive.setHex(0x3a2600);
+      r.mesh.position.set(r.x, r.y, r.z);
+      r.mesh.scale.setScalar(1);
+    }
+    function resetRings(){
+      lastRingX = 0; lastRingY = 3;
+      for (let i = 0; i < rings.length; i++) placeRing(rings[i], -RING_SPACING * (i + 1));
+    }
+
+    // ==================================================================
+    //  AUDIO (Web Audio API — sintetis, tanpa file)
+    // ==================================================================
+    let actx = null, master = null, engine = null, muted = false;
+    function initAudio(){
+      if (actx) return;
+      try {
+        actx = new (window.AudioContext || window.webkitAudioContext)();
+        master = actx.createGain();
+        master.gain.value = muted ? 0 : 0.9;
+        master.connect(actx.destination);
+      } catch(e){ actx = null; }
+    }
+    function blip(freq, dur, type, vol, slideTo){
+      if (!actx) return;
+      const t = actx.currentTime;
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || "triangle";
+      o.frequency.setValueAtTime(freq, t);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(master);
+      o.start(t); o.stop(t + dur + 0.03);
+    }
+    function sfxScore(n){
+      const base = 520 + Math.min(n, 30) * 14;
+      blip(base, 0.10, "triangle", 0.25, base * 1.5);
+      blip(base * 1.5, 0.12, "sine", 0.16);
+    }
+    function sfxCrash(){
+      if (!actx) return;
+      blip(150, 0.5, "sawtooth", 0.35, 55);
+      const t = actx.currentTime, dur = 0.4;
+      const buf = actx.createBuffer(1, Math.floor(actx.sampleRate * dur), actx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+      const src = actx.createBufferSource(); src.buffer = buf;
+      const g = actx.createGain(); g.gain.value = 0.3;
+      const lp = actx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 900;
+      src.connect(lp).connect(g).connect(master); src.start(t);
+    }
+    function startEngine(){
+      if (!actx || engine) return;
+      const o = actx.createOscillator(), g = actx.createGain(), lp = actx.createBiquadFilter();
+      o.type = "sawtooth"; o.frequency.value = 60;
+      lp.type = "lowpass"; lp.frequency.value = 380;
+      g.gain.value = 0.05;
+      o.connect(lp).connect(g).connect(master); o.start();
+      engine = { o, g };
+    }
+    function stopEngine(){ if (engine){ try { engine.o.stop(); } catch(e){} engine = null; } }
+    function setEngine(spd){ if (engine) engine.o.frequency.setTargetAtTime(52 + spd * 1.4, actx.currentTime, 0.1); }
+
+    // ==================================================================
+    //  STATE & HUD
+    // ==================================================================
+    const BASE_SPEED = 24, SPEED_CAP = 80;
+    const XB = 6.5, YB_LO = -0.5, YB_HI = 8;
+    const MOVE_RATE = 15;      // kecepatan kemudi keyboard (unit/detik)
+    const FOLLOW = 9;          // kehalusan easing posisi
+    let state = "ready";
+    let score = 0, best = +(localStorage.getItem("pesawat_best") || 0);
+    let speed = BASE_SPEED;
+    let px = 0, py = 3, tx = 0, ty = 3, prevPx = 0, prevPy = 3;
+    let shake = 0;
+    let camDist = 12;                        // jarak kamera = zoom (scroll / tombol / pinch)
+    const setZoom = (d) => { camDist = clamp(d, 7, 24); };
+
+    const $ = (id) => document.getElementById(id);
+    const elScore = $("score"), elBest = $("best"), elCombo = $("combo"),
+          elSpeedFill = $("speedFill"), elFinal = $("finalScore"), elBestLine = $("bestLine"),
+          elStart = $("startScreen"), elOver = $("overScreen"), elFlash = $("flash");
+    elBest.textContent = "Terbaik: " + best;
+
+    function updateHUD(){
+      elScore.textContent = score;
+      elSpeedFill.style.width = clamp((speed - BASE_SPEED) / (SPEED_CAP - BASE_SPEED) * 100, 4, 100) + "%";
+    }
+    function flashScreen(color, alpha, ms){
+      elFlash.style.background = color;
+      elFlash.style.opacity = alpha;
+      setTimeout(() => { elFlash.style.opacity = "0"; }, ms || 100);
+    }
+    function startGame(){
+      initAudio();
+      if (actx && actx.state === "suspended") actx.resume();
+      score = 0; speed = BASE_SPEED;
+      px = 0; py = 3; tx = 0; ty = 3; prevPx = 0; prevPy = 3;
+      resetRings();
+      elCombo.textContent = "";
+      updateHUD();
+      elStart.classList.add("hidden");
+      elOver.classList.add("hidden");
+      state = "playing";
+      startEngine();
+    }
+    function gameOver(){
+      state = "dead";
+      shake = 0.5;
+      sfxCrash(); stopEngine(); flashScreen("#ff2d2d", "0.6", 110);
+      const rec = score > best;
+      if (rec){ best = score; localStorage.setItem("pesawat_best", best); }
+      elFinal.textContent = score;
+      elBest.textContent = "Terbaik: " + best;
+      elBestLine.textContent = (rec && score > 0 ? "🏆 Rekor baru! " : "") + "Terbaik: " + best;
+      elOver.classList.remove("hidden");
+    }
+    function passRing(r){
+      r.passed = true; r.flash = 1;
+      r.mat.color.setHex(RING_OK); r.mat.emissive.setHex(0x0a3d1c);
+      score++;
+      speed = Math.min(speed * 1.035 + 0.4, SPEED_CAP);
+      sfxScore(score);
+      updateHUD();
+      elCombo.textContent = score >= 3 ? ("🔥 " + score) : "";
+      flashScreen("#2fe06a", "0.24", 120);                 // kilat hijau = TEMBUS!
+      elScore.classList.remove("pop"); void elScore.offsetWidth; elScore.classList.add("pop");
+    }
+
+    // ==================================================================
+    //  INPUT
+    // ==================================================================
+    const held = {};
+    const codeMap = { w:"up", arrowup:"up", s:"down", arrowdown:"down",
+                      a:"left", arrowleft:"left", d:"right", arrowright:"right" };
+    window.addEventListener("keydown", (e) => {
+      const k = e.key.toLowerCase();
+      if (k === " " || k === "enter"){
+        if (state !== "playing") startGame();
+        e.preventDefault(); return;
+      }
+      if (k === "+" || k === "="){ setZoom(camDist - 1.5); e.preventDefault(); return; }
+      if (k === "-" || k === "_"){ setZoom(camDist + 1.5); e.preventDefault(); return; }
+      if (codeMap[k]){ held[codeMap[k]] = true; e.preventDefault(); }
+    });
+    window.addEventListener("keyup", (e) => {
+      const k = e.key.toLowerCase();
+      if (codeMap[k]){ held[codeMap[k]] = false; e.preventDefault(); }
+    });
+
+    // Pointer / sentuh: 1 jari = kemudi (tahan & geser), 2 jari = pinch-zoom
+    let pointerDown = false;
+    function pointerTo(cx, cy){
+      const rect = renderer.domElement.getBoundingClientRect();
+      const nx = (cx - rect.left) / rect.width;
+      const ny = (cy - rect.top) / rect.height;
+      tx = clamp((nx * 2 - 1) * XB, -XB, XB);
+      ty = clamp(YB_HI - ny * (YB_HI - YB_LO), YB_LO, YB_HI);
+    }
+    const cv = renderer.domElement;
+    const pts = new Map();
+    let pinchD0 = 0, pinchCam0 = 0;
+    const pinchNow = () => { const a = [...pts.values()]; return Math.hypot(a[0].x-a[1].x, a[0].y-a[1].y); };
+    cv.addEventListener("pointerdown", (e) => {
+      pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
+      if (pts.size === 2){ pinchD0 = pinchNow(); pinchCam0 = camDist; pointerDown = false; }
+      else if (state === "playing"){ pointerDown = true; pointerTo(e.clientX, e.clientY); }
+      try { cv.setPointerCapture(e.pointerId); } catch(_){}
+    });
+    cv.addEventListener("pointermove", (e) => {
+      if (pts.has(e.pointerId)) pts.set(e.pointerId, { x:e.clientX, y:e.clientY });
+      if (pts.size === 2 && pinchD0){ setZoom(pinchCam0 * pinchD0 / pinchNow()); }
+      else if (pointerDown) pointerTo(e.clientX, e.clientY);
+    });
+    function pEnd(e){ pts.delete(e.pointerId); if (pts.size < 2) pinchD0 = 0; if (pts.size === 0) pointerDown = false; }
+    cv.addEventListener("pointerup", pEnd);
+    cv.addEventListener("pointercancel", pEnd);
+    cv.addEventListener("wheel", (e) => { e.preventDefault(); setZoom(camDist + (e.deltaY > 0 ? 1.4 : -1.4)); }, { passive:false });
+
+    $("btnStart").addEventListener("click", startGame);
+    $("btnRestart").addEventListener("click", startGame);
+    const btnMute = $("btnMute");
+    btnMute.addEventListener("click", () => {
+      muted = !muted;
+      if (master) master.gain.value = muted ? 0 : 0.9;
+      btnMute.textContent = muted ? "🔇" : "🔊";
+    });
+    $("btnZoomIn").addEventListener("click", () => setZoom(camDist - 2));
+    $("btnZoomOut").addEventListener("click", () => setZoom(camDist + 2));
+
+    // ==================================================================
+    //  LOOP
+    // ==================================================================
+    const clock = new THREE.Clock();
+    function update(dt, t){
+      // ---- kemudi ----
+      if (state === "playing"){
+        if (!pointerDown){
+          const ix = (held.right?1:0) - (held.left?1:0);
+          const iy = (held.up?1:0)    - (held.down?1:0);
+          tx = clamp(tx + ix * MOVE_RATE * dt, -XB, XB);
+          ty = clamp(ty + iy * MOVE_RATE * dt, YB_LO, YB_HI);
+        }
+      } else {
+        tx = 0; ty = 3 + Math.sin(t * 1.3) * 0.35;   // mengambang di layar menu
+      }
+      const s = 1 - Math.exp(-dt * FOLLOW);
+      px += (tx - px) * s;
+      py += (ty - py) * s;
+      const vx = dt > 0 ? (px - prevPx) / dt : 0;
+      const vy = dt > 0 ? (py - prevPy) / dt : 0;
+      prevPx = px; prevPy = py;
+
+      plane.position.set(px, py, PLANE_Z);
+      plane.rotation.z = clamp(-vx * 0.09, -0.7, 0.7);   // bank saat belok
+      plane.rotation.x = clamp(-vy * 0.06, -0.4, 0.4);   // pitch naik/turun
+      // yaw dasar (hidung -> -Z) sudah di planeModel; di sini hanya wiggle saat menu
+      plane.rotation.y = (state === "ready") ? Math.sin(t * 0.5) * 0.25 : 0;
+
+      // ---- lingkaran ----
+      if (state === "playing"){
+        speed = Math.min(speed + dt * 0.35, SPEED_CAP);
+        setEngine(speed);
+        for (const r of rings){
+          const prevZ = r.z;
+          r.z += speed * dt;
+          r.mesh.position.z = r.z;
+          r.mesh.rotation.z += dt * 0.6;
+          if (r.flash > 0){ r.flash -= dt * 3; r.mesh.scale.setScalar(1 + Math.max(0, r.flash) * 0.5); }
+          if (!r.passed && prevZ < PLANE_Z && r.z >= PLANE_Z){
+            const dist = Math.hypot(px - r.x, py - r.y);
+            if (dist < PASS_R) passRing(r);
+            else gameOver();
+          }
+          if (r.z > 16){
+            let far = Infinity;
+            for (const o of rings) far = Math.min(far, o.z);
+            placeRing(r, far - RING_SPACING);
+          }
+        }
+        // sorot lingkaran target: HIJAU bila pesawat sudah sejajar (pasti tembus), CYAN bila belum
+        let next = null;
+        for (const r of rings) if (!r.passed && r.z < PLANE_Z){ if (!next || r.z > next.z) next = r; }
+        const aimOK = next && Math.hypot(px - next.x, py - next.y) < PASS_R;
+        for (const r of rings){
+          if (!r.passed && r.flash <= 0){
+            if (r === next){
+              r.mat.color.setHex(aimOK ? RING_OK : RING_HI);
+              r.mat.emissive.setHex(aimOK ? 0x0a3d1c : 0x114455);
+            } else {
+              r.mat.color.setHex(RING_COL);
+              r.mat.emissive.setHex(0x3a2600);
+            }
+          }
+        }
+      }
+
+      // ---- kota bergerak ----
+      const cityScroll = (state === "playing" ? speed : BASE_SPEED * 0.5) * dt;
+      for (const tile of city){
+        tile.position.z += cityScroll;
+        if (tile.position.z > CITY_SPACING) tile.position.z -= CITY_SPACING * CITY_TILES;
+      }
+
+      // ---- kamera chase (jarak = camDist / zoom) ----
+      let cgX = px * 0.4, cgY = 3.4 + camDist * 0.24 + py * 0.32, cgZ = PLANE_Z + camDist;
+      if (state === "ready"){ cgX = Math.sin(t*0.3)*10; cgZ = camDist + Math.cos(t*0.3)*3; cgY = 5.5; }
+      const cs = 1 - Math.exp(-dt * 5);
+      camera.position.x += (cgX - camera.position.x) * cs;
+      camera.position.y += (cgY - camera.position.y) * cs;
+      camera.position.z += (cgZ - camera.position.z) * cs;
+      if (shake > 0){
+        shake -= dt;
+        camera.position.x += (Math.random()*2-1) * shake * 1.5;
+        camera.position.y += (Math.random()*2-1) * shake * 1.5;
+      }
+      camera.lookAt(px * 0.55, 2.6 + py * 0.5, PLANE_Z - 26);
+    }
+
+    function animate(){
+      requestAnimationFrame(animate);
+      const dt = Math.min(clock.getDelta(), 0.05);
+      update(dt, clock.getElapsedTime());
+      renderer.render(scene, camera);
+    }
+
+    // Mulai (layar start tampil; game jalan setelah klik Mulai)
+    resetRings();
+    document.getElementById("loading").style.display = "none";
+    animate();
+  })();
+  </script>
+
+  <script>
+    // Daftarkan service worker (offline + installable) — hanya di HTTPS/localhost, bukan file://
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
