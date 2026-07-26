@@ -179,17 +179,12 @@ function ProjectsSection({ copy }: { copy: Copy }) {
   return (
     <section id="projects" className="projects" data-reveal>
       <div className="section-shell section-block">
-        <div className="section-heading section-heading--split">
-          <div>
-            {/* Same shape as the other section headings: one accented word
-                carrying the orange rule underneath it. */}
-            <h2 className="section-title">
-              Selected <em>projects</em>
-            </h2>
-          </div>
-          <p className="section-kicker">
-            Web systems, playable experiments, and data work—switch between tracks to explore each.
-          </p>
+        <div className="section-heading">
+          {/* Same shape as the other section headings: one accented word
+              carrying the orange rule underneath it. */}
+          <h2 className="section-title">
+            Selected <em>projects</em>
+          </h2>
         </div>
 
         <div className="project-tabs" role="tablist" aria-label="Project categories">

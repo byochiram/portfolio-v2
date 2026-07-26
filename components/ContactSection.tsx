@@ -55,12 +55,6 @@ function ContactSection({ copy }: { copy: Copy }) {
             </a>
           ))}
         </div>
-
-        {/* One centred line. With the second span gone there is nothing left
-            for a two-column split to balance against. */}
-        <footer className="contact-simple__footer">
-          <span>© 2026 Rosidah Rahmati</span>
-        </footer>
       </div>
     </section>
   );

@@ -130,7 +130,7 @@ export default function Portfolio() {
           intro overlay is still covering the page. */}
       <header className={`site-header ${showIntro ? "" : "site-header--visible"}`}>
         <button className="brand" onClick={() => scrollTo("home")} aria-label="Go to home">
-          {portfolio.initials}<span>.</span>
+          {portfolio.brand}<span>.</span>
         </button>
 
         <button

@@ -121,8 +121,28 @@ function StackLogo({ item }: { item: StackItem }) {
 
 const MemoizedStackLogo = memo(StackLogo);
 
-function LogoSet({ items, duplicate = false }: { items: StackItem[]; duplicate?: boolean }) {
-  const repeatedItems = [...items, ...items];
+// The rail scrolls one whole set and then snaps back, so it only reads as
+// continuous while a single set is at least as wide as the rail it slides
+// through. The rail is capped near 1090px and each logo occupies about 56px,
+// so a set needs roughly 20 logos. Rows built from five or six tools were
+// running 560–670px wide and left a visible hole at the right edge; they now
+// repeat more times to cover it.
+const MIN_LOGOS_PER_SET = 20;
+
+function repeatsFor(count: number) {
+  return Math.max(2, Math.ceil(MIN_LOGOS_PER_SET / count));
+}
+
+function LogoSet({
+  items,
+  repeats,
+  duplicate = false,
+}: {
+  items: StackItem[];
+  repeats: number;
+  duplicate?: boolean;
+}) {
+  const repeatedItems = Array.from({ length: repeats }, () => items).flat();
   return (
     <div className="stack-runway__set" aria-hidden={duplicate || undefined}>
       {repeatedItems.map((item, index) => (
@@ -143,20 +163,31 @@ function SkillsSection({ copy: _copy }: { copy: Copy }) {
         </header>
 
         <div className="stack-flow__rows" aria-label="Technical stack by category">
-          {stackGroups.map((group) => (
-            <div className="stack-flow__row" key={group.title}>
-              <div className="stack-flow__category">
-                <span>{group.index}</span>
-                <strong>{group.title}</strong>
-              </div>
-              <div className="stack-runway__viewport">
-                <div className="stack-runway__track">
-                  <LogoSet items={group.items} />
-                  <LogoSet items={group.items} duplicate />
+          {stackGroups.map((group) => {
+            const repeats = repeatsFor(group.items.length);
+            const perSet = repeats * group.items.length;
+
+            return (
+              <div className="stack-flow__row" key={group.title}>
+                <div className="stack-flow__category">
+                  <span>{group.index}</span>
+                  <strong>{group.title}</strong>
+                </div>
+                <div className="stack-runway__viewport">
+                  {/* Duration tracks the set width so every lane travels at the
+                      same speed. On one fixed duration the widest row moved
+                      more than twice as fast as the narrowest. */}
+                  <div
+                    className="stack-runway__track"
+                    style={{ ["--stack-dur" as string]: `${(perSet * 2.6).toFixed(1)}s` }}
+                  >
+                    <LogoSet items={group.items} repeats={repeats} />
+                    <LogoSet items={group.items} repeats={repeats} duplicate />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <p className="stack-runway__hint">Hover to pause</p>

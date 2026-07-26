@@ -47,7 +47,10 @@ export type Project = {
 
 export const portfolio = {
   name: "Rosidah Rahmati",
+  /** Two letters, used on the lanyard pass as RR—26. */
   initials: "RR",
+  /** Header wordmark, matching the kakros.id domain the site is deployed on. */
+  brand: "KakRos",
   role: "Software Developer",
   tagline:
     "I enjoy building practical software projects — from web-based systems to data-driven solutions. Fresh graduate from Informatics, Diponegoro University with a passion for clean code and real-world problem solving.",
@@ -792,7 +795,7 @@ export const portfolio = {
   ] satisfies Project[],
   awards: [
     { title: "Alibaba Cloud Certified Associate", issuer: "Alibaba Cloud", year: "Valid until Nov 2026",  image: "/certificates/alibaba-aca.ec7c0f4b.webp" },
-    { title: "Next Generation ECS and OSS Technologies", issuer: "Alibaba Cloud · Apsara Conference 2021", year: "Valid until Nov 2026",  image: "/certificates/apsara-2021.44dfce82.webp" },
+    { title: "Next Generation ECS and OSS Technologies", issuer: "Alibaba Cloud · Apsara Conference", year: "Valid until Nov 2026",  image: "/certificates/apsara-2021.44dfce82.webp" },
     { title: "Database Design", issuer: "Oracle Academy", year: "Course Certificate",  image: "/certificates/oracle-db-design.7f52855c.webp" },
     { title: "Database Programming with SQL", issuer: "Oracle Academy", year: "Course Certificate",  image: "/certificates/oracle-db-sql.adae0bf4.webp" },
   ],

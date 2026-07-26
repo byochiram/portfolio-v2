@@ -6994,3 +6994,29 @@ main > section {
 .projects .project-tabs { margin-top: 16px; }
 .projects .project-index__row--tabbed { margin-top: 16px; }
 .projects .project-tab { padding-top: 13px; padding-bottom: 13px; }
+
+/* ══ RAIL LOGO · KECEPATAN SERAGAM ══ */
+
+/* Every lane shared one 58s duration while their widths differed by more than
+   2x, so the narrow lanes crawled and the wide one raced. Duration now comes
+   from the component, scaled to how many logos a set holds. */
+/* Beats the per-row nth-child durations further up the file, which pinned each
+   lane to a hardcoded 37-51s regardless of how wide it actually is. */
+.stack-flow__row:nth-child(n) .stack-runway__track {
+  animation-duration: var(--stack-dur, 58s);
+}
+
+/* ══ HEADER · NAV TERPUSAT ══ */
+
+/* The bar was auto/1fr/auto with the theme toggle filling the third column.
+   With the toggle gone that column collapsed to 0, so the nav sat in the
+   remaining space and drifted 41px right of centre — and a longer wordmark
+   than "RR." pushed it further. Equal outer columns pin it to the middle
+   whatever the wordmark says. */
+.site-header { grid-template-columns: 1fr auto 1fr; }
+.site-header .brand { grid-column: 1; justify-self: start; }
+.site-header .nav { grid-column: 2; justify-self: center; }
+.site-header .menu-button { grid-column: 3; grid-row: 1; justify-self: end; }
+/* Padding was 16px left against 6px right, left over from the toggle that used
+   to sit on the right. That alone offset the centre by 5px. */
+.site-header { padding-left: 16px; padding-right: 16px; }
