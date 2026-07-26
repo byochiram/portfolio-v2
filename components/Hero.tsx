@@ -161,11 +161,18 @@ export default function Hero({ ready }: { ready: boolean }) {
             ))}
           </h1>
 
-          {/* Split around the portrait so both words stay readable — the photo
-              sits in the gap instead of covering the middle of the name. */}
-          <div className="hero__name-split" aria-label="Rosidah Rahmati">
-            <span>ROSIDAH</span>
-            <span>RAHMATI</span>
+          {/* Two copies inside a clipped window: the pair scrolls up and out of
+              the frame, and the next copy arrives from below — the same
+              vanishing rhythm the original marquee had. */}
+          <div className="hero__name-window" aria-label="Rosidah Rahmati">
+            <div className="hero__name-reel">
+              {[0, 1].map((copy) => (
+                <div className="hero__name-split" key={copy} aria-hidden={copy === 1}>
+                  <span>ROSIDAH</span>
+                  <span>RAHMATI</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
