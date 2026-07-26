@@ -224,7 +224,7 @@ function ProjectsSection({ copy }: { copy: Copy }) {
         >
           {activeProjects.map((project, index) => (
             <article
-              className="project-card project-card--preview"
+              className="project-card project-card--preview project-card--sheet"
               key={project.title}
               data-kind={getProjectCategory(project)}
               style={{ ["--i" as string]: index }}
@@ -252,6 +252,9 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                   <div>
                     <span className="project-kind">{project.badge}</span>
                     <h3>{project.title}</h3>
+                    {/* One plain line of context, so a card says what the thing
+                        is without needing the modal opened first. */}
+                    <p className="project-card__line">{project.subtitle}</p>
                   </div>
                   <div className="project-preview-tags">
                     {/* Three, so the database shows next to the language and framework. */}

@@ -69,7 +69,6 @@ function AboutSection({ copy }: { copy: Copy }) {
               <br />
               <em>build.</em>
             </h2>
-            <span className="about-heading__index" aria-hidden="true">02 / PROFILE</span>
           </header>
 
           <div className={`about-lanyard ${lanyardActive ? "about-lanyard--active" : ""}`}>

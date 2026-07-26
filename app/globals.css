@@ -6902,3 +6902,202 @@ main > section {
 @media (prefers-reduced-motion: reduce) {
   .hero__name-reel { animation: none; }
 }
+
+/* ══ ABOUT · STACK · PROJECTS TUNING ══ */
+
+/* The orbit ring is 850px across inside a 668px section, so it used to hang
+   164px past both edges — that stray arc above "Tools I build with" was this
+   ring, not anything belonging to the stack. Clipping keeps the decoration in
+   its own section. Measured safe: at rest the shell, the CV button and the
+   lanyard all sit inside the section box; only the ring pokes out. */
+.about { overflow: clip; }
+
+/* Detail lines under each fact were 10px — legible but timid next to the
+   labels above them. */
+.about-stop p { font-size: 11.5px; }
+
+/* Stack was locked to a full viewport with a 9% fade at each end, roughly
+   60px of gradient. The fade is now a flat 26px so it reads as an edge rather
+   than a long wash, and the section is only as tall as its five lanes plus
+   padding. Nothing inside it shrank. */
+.skills.skills--flow {
+  min-height: 0;
+  padding-top: clamp(52px, 6vh, 68px);
+  padding-bottom: clamp(52px, 6vh, 68px);
+  background:
+    radial-gradient(circle at 16% 20%, rgba(75, 183, 170, .21), transparent 25%),
+    radial-gradient(circle at 82% 16%, rgba(201, 130, 36, .22), transparent 27%),
+    radial-gradient(circle at 70% 88%, rgba(239, 133, 93, .13), transparent 24%),
+    linear-gradient(180deg,
+      #f7f1e5 0, #0c2429 26px,
+      #0b2024 calc(100% - 26px), #dce9eb 100%);
+}
+
+/* ── PROJECT CARDS ──
+   An earlier pass stripped the border, radius and background off these cards
+   and dropped the labels to 6–7px, which left five loose blocks with nothing
+   holding them. Each card is a defined sheet again: one wide screenshot on
+   top, then badge, title, a line of context and the stack. */
+.projects .project-index__row--tabbed {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(15px, 1.5vw, 20px);
+  align-items: stretch;
+  margin-top: 22px;
+}
+.projects .project-card--preview.project-card--sheet {
+  height: 100%;
+  overflow: visible;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.projects .project-card--preview.project-card--sheet .project-open {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(23, 52, 59, .14);
+  border-radius: 16px;
+  background: #fbf9f3;
+  box-shadow: 0 10px 30px rgba(23, 52, 59, .06);
+  text-align: left;
+  transition:
+    transform .5s cubic-bezier(.16, 1, .3, 1),
+    box-shadow .5s cubic-bezier(.16, 1, .3, 1),
+    border-color .4s ease;
+}
+.projects .project-card--preview.project-card--sheet:hover .project-open {
+  transform: translateY(-4px);
+  border-color: rgba(35, 113, 105, .42);
+  box-shadow: 0 20px 44px rgba(23, 52, 59, .13);
+}
+.projects .project-card--preview.project-card--sheet .project-open:focus-visible {
+  outline: 2px solid rgba(35, 113, 105, .55);
+  outline-offset: 3px;
+}
+
+/* A letterbox frame, top-aligned: these are screenshots of web pages, so the
+   top strip is the part that identifies them. The old 154px near-square crop
+   sliced their headings in half. */
+.projects .project-card--preview.project-card--sheet .project-preview {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 0;
+  border-bottom: 1px solid rgba(23, 52, 59, .12);
+  border-radius: 0;
+  background: #e9e4d8;
+}
+.projects .project-card--preview.project-card--sheet .project-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 0;
+  transition: transform .7s cubic-bezier(.16, 1, .3, 1);
+}
+.projects .project-card--preview.project-card--sheet:hover .project-preview img { transform: scale(1.035); }
+
+.projects .project-card--preview.project-card--sheet .project-preview__topline {
+  top: 10px;
+  right: 10px;
+  left: 10px;
+}
+.projects .project-card--preview.project-card--sheet .project-preview__topline span {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(12, 32, 36, .82);
+  border-color: rgba(255, 255, 255, .2);
+  color: #f3f0e7;
+  font-size: 8.5px;
+  letter-spacing: .1em;
+}
+/* Hidden until hover: the whole card is already the button, so this is a hint
+   rather than a control that needs to shout. */
+.projects .project-card--preview.project-card--sheet .project-preview__action {
+  right: 10px;
+  bottom: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #237169;
+  color: #f7f5ef;
+  font-size: 8.5px;
+  letter-spacing: .1em;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.projects .project-card--preview.project-card--sheet:hover .project-preview__action,
+.projects .project-card--preview.project-card--sheet .project-open:focus-visible .project-preview__action {
+  opacity: 1;
+  transform: none;
+}
+
+.projects .project-card--preview.project-card--sheet .project-preview-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 16px 16px;
+  background: none;
+}
+.projects .project-card--preview.project-card--sheet .project-kind {
+  display: block;
+  color: #237169;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+}
+.projects .project-card--preview.project-card--sheet .project-preview-copy h3 {
+  margin-top: 7px;
+  font-size: clamp(1.02rem, 1.25vw, 1.22rem);
+  line-height: 1.12;
+  letter-spacing: -.01em;
+}
+.projects .project-card--preview.project-card--sheet .project-card__line {
+  margin-top: 6px;
+  color: rgba(23, 47, 53, .66);
+  font-size: .8rem;
+  line-height: 1.4;
+}
+.projects .project-card--preview.project-card--sheet .project-preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 6px;
+}
+.projects .project-card--preview.project-card--sheet .project-preview-tags span {
+  padding: 4px 9px;
+  border: 1px solid rgba(23, 52, 59, .16);
+  border-radius: 999px;
+  background: rgba(35, 113, 105, .06);
+  color: rgba(23, 47, 53, .78);
+  font-size: .68rem;
+  letter-spacing: .01em;
+}
+
+@media (max-width: 1050px) {
+  .projects .project-index__row--tabbed {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .projects .project-index__row--tabbed {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  .projects .project-card--preview.project-card--sheet .project-preview { aspect-ratio: 16 / 10; }
+  /* No hover on a phone, so the hint has to be visible by default. */
+  .projects .project-card--preview.project-card--sheet .project-preview__action {
+    opacity: 1;
+    transform: none;
+  }
+}
