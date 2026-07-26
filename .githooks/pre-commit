@@ -1,0 +1,37 @@
+#!/bin/sh
+# Menahan berkas berisi data pribadi agar tidak masuk repo publik.
+#
+# Ini ditulis setelah dua kejadian: scan sertifikat pernah ikut ter-commit,
+# lalu terulang di folder public/certificates/ karena aturan .gitignore waktu
+# itu hanya menutup /_originals. Nama folder bisa berubah, jadi penjaganya
+# bekerja pada pola nama berkas, bukan pada satu jalur tertentu.
+#
+# Pasang sekali:  git config core.hooksPath .githooks
+
+pola='(^|/)_originals/|ktp|kartu.?keluarga|ijazah|transkrip|transcript|npwp|paspor|passport|akta'
+
+tertahan=$(git diff --cached --name-only --diff-filter=ACMR | grep -Ei "$pola")
+
+if [ -n "$tertahan" ]; then
+  echo ""
+  echo "  Commit dihentikan — berkas ini terlihat memuat data pribadi:"
+  echo ""
+  echo "$tertahan" | sed 's/^/    /'
+  echo ""
+  echo "  Repo ini publik. Kalau berkasnya memang aman untuk dipublikasikan,"
+  echo "  lewati sekali dengan:  git commit --no-verify"
+  echo ""
+  exit 1
+fi
+
+# Sertifikat boleh masuk, tapi ingatkan agar nomornya sudah tersensor.
+sertifikat=$(git diff --cached --name-only --diff-filter=ACMR | grep -Ei 'sertifikat|certificate')
+if [ -n "$sertifikat" ]; then
+  echo ""
+  echo "  Catatan: ada berkas sertifikat di commit ini."
+  echo "$sertifikat" | sed 's/^/    /'
+  echo "  Pastikan NIM dan nomor ID di dalam gambarnya sudah tersensor."
+  echo ""
+fi
+
+exit 0

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 
 export default function Hero({ ready }: { ready: boolean }) {
@@ -179,15 +180,20 @@ export default function Hero({ ready }: { ready: boolean }) {
         <div className="hero__photo-backdrop" aria-hidden="true" />
 
         <div className="hero__photo-wrap">
-          <img
+          {/* This is the LCP element. As a plain <img> the full 923x1416 /
+              136 KB file went to every viewport, including a 390px phone that
+              renders it about 281px wide. The optimizer now sizes it per
+              screen and serves AVIF where accepted. */}
+          <Image
             ref={photoRef}
             className="hero__photo"
             src="/rosidah-portrait.webp"
             alt="Rosidah Rahmati"
             width={923}
             height={1416}
-            fetchPriority="high"
-            decoding="async"
+            sizes="(max-width: 700px) 74vw, (max-width: 1100px) 42vw, 30vw"
+            priority
+            quality={82}
           />
         </div>
       </div>

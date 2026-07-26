@@ -95,8 +95,10 @@ const stackGroups: StackGroup[] = [
 function StackLogo({ item }: { item: StackItem }) {
   return (
     <span className="stack-runway__item" title={item.name} aria-label={item.name}>
-      <span className="stack-runway__logo" aria-hidden="true">
-        <span>{item.mark}</span>
+      {/* The two-letter fallback rides on a ::before via data-mark instead of a
+          real element. With 226 logos on the rail that span alone was 226 DOM
+          nodes for text that is covered by the image anyway. */}
+      <span className="stack-runway__logo" aria-hidden="true" data-mark={item.mark}>
         {item.logo && (
           <img
             className={[

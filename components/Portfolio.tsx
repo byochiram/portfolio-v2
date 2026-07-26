@@ -45,6 +45,15 @@ export default function Portfolio() {
 
   useEffect(() => {
     setMounted(true);
+
+    // The nine-greeting opener holds the whole page behind `visibility: hidden`
+    // for 3.74s, which caps LCP no matter how fast everything else is. It earns
+    // that on a first impression; it does not earn it again on every return to
+    // the tab, so a second visit in the same session goes straight in.
+    if (sessionStorage.getItem("rr-intro-seen") === "1") {
+      document.documentElement.classList.add("intro-done");
+      setShowIntro(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -114,6 +123,7 @@ export default function Portfolio() {
 
   const finishIntro = useCallback(() => {
     document.documentElement.classList.add("intro-done");
+    sessionStorage.setItem("rr-intro-seen", "1");
     setShowIntro(false);
   }, []);
 

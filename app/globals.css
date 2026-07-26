@@ -7020,3 +7020,37 @@ main > section {
 /* Padding was 16px left against 6px right, left over from the toggle that used
    to sit on the right. That alone offset the centre by 5px. */
 .site-header { padding-left: 16px; padding-right: 16px; }
+
+/* ══ BIAYA RAIL LOGO ══ */
+
+/* Fallback dua huruf pindah ke ::before lewat data-mark. Sebagai elemen nyata
+   ia menyumbang 226 node DOM untuk teks yang selalu tertutup gambarnya. */
+.stack-runway__logo::before {
+  content: attr(data-mark);
+  color: #4bb7aa;
+  font-size: 10px;
+  font-weight: 950;
+}
+
+/* saturate(.9) itu desaturasi 10% yang praktis tak terlihat, tapi memaksa satu
+   lintasan filter untuk masing-masing dari 196 logo. invert(1) pada 30 logo
+   gelap tetap dipertahankan karena memang fungsional. */
+.stack-runway__image { filter: none; }
+.stack-runway__item:hover .stack-runway__image { filter: none; }
+.stack-runway__image--invert,
+.stack-runway__item:hover .stack-runway__image--invert { filter: invert(1) opacity(.94); }
+
+/* stackAurora menganimasikan background-position pada area 1451x497 dengan lima
+   lapis gradien. Properti itu tidak bisa dikomposit GPU, jadi ia memaksa
+   repaint sekitar 721.000 piksel tiap frame, tanpa henti. Gradiennya tetap,
+   pergerakannya yang dilepas. */
+.skills.skills--flow { animation: none; }
+
+/* Ukuran cadangan content-visibility sebelumnya 500px untuk kelima section,
+   padahal tinggi nyatanya 373 sampai 834px — selisih total 659px, dan tiap
+   selisih itu lompatan gulir saat section pertama dirender. */
+.about { contain-intrinsic-size: auto 668px; }
+.skills { contain-intrinsic-size: auto 497px; }
+.projects { contain-intrinsic-size: auto 834px; }
+.awards { contain-intrinsic-size: auto 473px; }
+.contact { contain-intrinsic-size: auto 373px; }
