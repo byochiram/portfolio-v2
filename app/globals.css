@@ -6345,9 +6345,13 @@ main > section {
 
 /* ══ PROJECT MODAL — case study layout ══ */
 .project-modal__panel {
-  grid-template-columns: minmax(0, 1fr) !important;
-  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  /* Flex column, not grid: with only a max-height the container height is
+     indefinite, so a `1fr` row grows to content and the overflow gets clipped
+     with no way to reach it. Flex items shrink instead, so the body scrolls. */
+  display: flex !important;
+  flex-direction: column;
   width: min(880px, 100%);
+  max-height: 100% !important;
   overflow: hidden !important;
 }
 
@@ -6410,10 +6414,16 @@ main > section {
 .pm__tab:focus-visible { outline: 2px solid #237169; outline-offset: -3px; border-radius: 6px; }
 
 .pm__panel {
+  flex: 1 1 auto;
+  min-height: 0;          /* lets the pane shrink below its content so it scrolls */
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: clamp(18px, 3vw, 26px) clamp(20px, 4vw, 34px);
   -webkit-overflow-scrolling: touch;
 }
+.pm__head,
+.pm__tabs,
+.pm__foot { flex: 0 0 auto; }
 .pm__overview { display: grid; gap: 20px; }
 .pm__block h4 {
   margin: 0 0 7px;
