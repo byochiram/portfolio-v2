@@ -328,7 +328,7 @@ export const portfolio = {
       ],
       tags: ["React", "Express", "Prisma", "PostgreSQL", "JWT", "Vite"],
       liveUrl: "https://mall.kakros.id/",
-      repoUrl: "#",
+      repoUrl: "https://github.com/byochiram/mall-tenant-app",
       visual: "auction",
       previewUrl: "",
       kind: "Web App",
@@ -389,7 +389,7 @@ export const portfolio = {
       ],
       tags: ["React", "Vite", "PWA", "JavaScript"],
       liveUrl: "https://todo-app-bmg.pages.dev/",
-      repoUrl: "#",
+      repoUrl: "https://github.com/byochiram/todo-app",
       visual: "academic",
       previewUrl: "",
       kind: "Web App",
@@ -405,9 +405,10 @@ export const portfolio = {
           "Drag-and-drop and undo are the two features people reach for a library to get. I wrote them as custom hooks instead — one holding the drag state and drop position, one keeping the last deleted item long enough to restore it. Doing it by hand meant understanding the pointer events and state transitions rather than configuring someone else's abstraction, and it kept the dependency list to React and the router.",
       },
       metrics: [
+        { value: "8", label: "components" },
         { value: "3", label: "custom hooks" },
-        { value: "0", label: "UI libraries" },
-        { value: "100%", label: "offline capable" },
+        { value: "5", label: "categories" },
+        { value: "PWA", label: "works offline" },
       ],
       process: [
         {
