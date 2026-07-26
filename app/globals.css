@@ -6786,3 +6786,46 @@ main > section {
 .award-link:focus-visible { outline: 2px solid #237169; outline-offset: 2px; border-radius: 3px; }
 .dark .award-link { color: #5fae99; border-bottom-color: rgba(95, 174, 153, .35); }
 .dark .award-link:hover { border-bottom-color: #5fae99; }
+
+/* ── HERO NAME ── split around the portrait so both words read in full.
+   Replaces the looping marquee: the photo now sits in the gap rather than
+   covering the middle of the name. ── */
+.hero__name-split {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  width: 100%;
+  /* the gap is sized to clear the portrait */
+  gap: clamp(150px, 25vw, 380px);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.hero__name-split span {
+  font-family: var(--font-anton), "Anton", sans-serif;
+  font-size: clamp(2.2rem, 8.4vw, 5.4rem);
+  font-weight: 400;
+  line-height: .85;
+  letter-spacing: -.03em;
+  color: transparent;
+  -webkit-text-stroke: 1.4px rgba(23, 52, 59, .5);
+  transition: -webkit-text-stroke-color .4s ease;
+}
+.hero:hover .hero__name-split span {
+  -webkit-text-stroke-color: rgba(35, 113, 105, .72);
+}
+.dark .hero__name-split span { -webkit-text-stroke-color: rgba(237, 240, 232, .42); }
+.dark .hero:hover .hero__name-split span { -webkit-text-stroke-color: rgba(95, 174, 153, .8); }
+
+@media (max-width: 900px) {
+  /* Portrait is proportionally wider here, so the words tuck closer in. */
+  .hero__name-split { gap: clamp(110px, 34vw, 200px); }
+  .hero__name-split span { font-size: clamp(1.7rem, 7.6vw, 3rem); }
+}
+@media (max-width: 600px) {
+  .hero__name-split { gap: 0; flex-direction: column; align-items: center; row-gap: 2px; }
+  .hero__name-split span { font-size: clamp(1.6rem, 11vw, 2.6rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__name-split span { transition: none; }
+}

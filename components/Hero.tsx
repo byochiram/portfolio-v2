@@ -133,22 +133,6 @@ export default function Hero({ ready }: { ready: boolean }) {
         <span /><span /><span /><span />
       </div>
 
-      <div className="hero__vertical-text hero__vertical-text--left" aria-hidden="true">
-        <div className="hero__vertical-track">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <span key={index}>ROSIDAH RAHMATI&nbsp;&nbsp;·&nbsp;&nbsp;</span>
-          ))}
-        </div>
-      </div>
-
-      <div className="hero__vertical-text hero__vertical-text--right" aria-hidden="true">
-        <div className="hero__vertical-track hero__vertical-track--up">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <span key={index}>SOFTWARE DEVELOPER&nbsp;&nbsp;·&nbsp;&nbsp;</span>
-          ))}
-        </div>
-      </div>
-
       <div className="hero__poster">
         <div className="hero__space" aria-hidden="true">
           <div className="hero__space-layer hero__space-layer--far">
@@ -190,16 +174,11 @@ export default function Hero({ ready }: { ready: boolean }) {
             ))}
           </h1>
 
-          <div className="hero__marquee-layer hero__name-rail" aria-label="Rosidah Rahmati">
-            <div className="hero__marquee">
-              <div className="hero__marquee-track">
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <span key={index} className="hero__marquee-item">
-                    ROSIDAH RAHMATI<span className="hero__marquee-dot">•</span>
-                  </span>
-                ))}
-              </div>
-            </div>
+          {/* Split around the portrait so both words stay readable — the photo
+              sits in the gap instead of covering the middle of the name. */}
+          <div className="hero__name-split" aria-label="Rosidah Rahmati">
+            <span>ROSIDAH</span>
+            <span>RAHMATI</span>
           </div>
         </div>
 
