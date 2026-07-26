@@ -1852,10 +1852,10 @@ button { color: inherit; background: none; }
   z-index: 1;
   left: 50%;
   bottom: 1%;
-  width: min(31vw, 430px);
+  width: min(23vw, 318px);
   height: 58%;
   border-radius: 52% 48% 24px 24px;
-  background: #2a746c;
+  background: #a9c3ba;
   box-shadow: 18px 18px 0 rgba(17,17,24,.08);
   transform: translateX(-50%) rotate(2.5deg);
   pointer-events: none;
@@ -1910,7 +1910,7 @@ button { color: inherit; background: none; }
 
 @media (max-width: 900px) {
   .hero__photo-backdrop {
-    width: min(50vw, 410px);
+    width: min(40vw, 320px);
     height: 54%;
     bottom: 2%;
   }
@@ -1938,7 +1938,7 @@ button { color: inherit; background: none; }
   .about .lanyard-card { top: 76px; }
   .about .lanyard-clip { top: 58px; }
   .hero__photo-backdrop {
-    width: 70vw;
+    width: 56vw;
     height: 52%;
     bottom: 3%;
     border-radius: 50% 50% 18px 18px;
@@ -5521,7 +5521,7 @@ main > section {
     #f5f1e8;
 }
 .hero__photo-backdrop {
-  background: #2a746c;
+  background: #a9c3ba;
 }
 .hero__photo-backdrop::before,
 .hero__orbit--inner {
@@ -5937,7 +5937,7 @@ main > section {
 }
 
 .hero__photo-backdrop {
-  background: #55998e;
+  background: #a9c3ba;
 }
 
 .about {
@@ -6105,7 +6105,7 @@ main > section {
 }
 
 .dark .hero__photo-backdrop {
-  background: #3f837a;
+  background: #5d8880;
 }
 
 .dark .contact.contact--simple {
@@ -6157,7 +6157,7 @@ main > section {
   .hero__photo-backdrop {
     bottom: 4%;
     height: 52%;
-    background: #55998e;
+    background: #a9c3ba;
   }
 
   .hero__photo-wrap {

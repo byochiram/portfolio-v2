@@ -155,8 +155,9 @@ export default function Hero({ ready }: { ready: boolean }) {
             <div className="hero__orbit hero__orbit--outer"><i /></div>
             <div className="hero__orbit hero__orbit--middle"><i /></div>
             <div className="hero__orbit hero__orbit--inner"><i /></div>
+            {/* Fewer specks: twelve read as clutter behind the portrait. */}
             <div className="hero__starfield">
-              {Array.from({ length: 12 }).map((_, index) => <span key={index} />)}
+              {Array.from({ length: 5 }).map((_, index) => <span key={index} />)}
             </div>
           </div>
 
