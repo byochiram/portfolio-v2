@@ -1,6 +1,7 @@
 "use client";
 
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { portfolio, Project } from "@/data/portfolio";
 import Icon from "@/components/Icon";
@@ -116,7 +117,22 @@ function ProjectsSection({ copy }: { copy: Copy }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [activeTab, setActiveTab] = useState<ProjectCategory>("Web");
   const [modalTab, setModalTab] = useState<ModalTab>("Overview");
+  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => setMounted(true), []);
+
+  const shots = selectedProject?.screenshots ?? [];
+  const stepLightbox = useCallback(
+    (delta: number) =>
+      setLightbox((current) =>
+        current === null || shots.length === 0
+          ? current
+          : (current + delta + shots.length) % shots.length
+      ),
+    [shots.length]
+  );
 
   // Only offer a tab when the project actually has that material.
   const modalTabs: ModalTab[] = selectedProject
@@ -130,21 +146,31 @@ function ProjectsSection({ copy }: { copy: Copy }) {
   useEffect(() => {
     if (!selectedProject) return;
     setModalTab("Overview");
+    setLightbox(null);
 
     const previousOverflow = document.body.style.overflow;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedProject(null);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        // Escape closes the enlarged image first, then the dialog itself.
+        setLightbox((current) => {
+          if (current === null) setSelectedProject(null);
+          return null;
+        });
+        return;
+      }
+      if (event.key === "ArrowRight") stepLightbox(1);
+      if (event.key === "ArrowLeft") stepLightbox(-1);
     };
 
     document.body.style.overflow = "hidden";
-    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("keydown", onKey);
     window.requestAnimationFrame(() => closeButtonRef.current?.focus());
 
     return () => {
       document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("keydown", onKey);
     };
-  }, [selectedProject]);
+  }, [selectedProject, stepLightbox]);
 
   const activeProjects = portfolio.projects.filter(
     (project) => getProjectCategory(project) === activeTab
@@ -239,14 +265,16 @@ function ProjectsSection({ copy }: { copy: Copy }) {
         </div>
       </div>
 
-      {selectedProject ? (
-        <div
-          className="project-modal"
-          role="presentation"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setSelectedProject(null);
-          }}
-        >
+      {selectedProject && mounted
+        ? createPortal(
+            <>
+              <div
+                className="project-modal"
+                role="presentation"
+                onMouseDown={(event) => {
+                  if (event.target === event.currentTarget) setSelectedProject(null);
+                }}
+              >
           <div
             className="project-modal__panel"
             role="dialog"
@@ -389,14 +417,24 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                   {selectedProject.screenshots?.length ? (
                     selectedProject.screenshots.map((screenshot, index) => (
                       <figure key={screenshot}>
-                        <Image
-                          src={screenshot}
-                          alt={`${selectedProject.title} screenshot ${index + 1}`}
-                          width={900}
-                          height={620}
-                          sizes="(max-width: 900px) 92vw, 60vw"
-                          loading={index === 0 ? "eager" : "lazy"}
-                        />
+                        <button
+                          type="button"
+                          className="pm__shot"
+                          onClick={() => setLightbox(index)}
+                          aria-label={`Enlarge screenshot ${index + 1}`}
+                        >
+                          <Image
+                            src={screenshot}
+                            alt={`${selectedProject.title} screenshot ${index + 1}`}
+                            width={900}
+                            height={620}
+                            sizes="(max-width: 900px) 45vw, 280px"
+                            loading={index === 0 ? "eager" : "lazy"}
+                          />
+                          <span className="pm__shot-zoom" aria-hidden="true">
+                            ⤢
+                          </span>
+                        </button>
                         <figcaption>{String(index + 1).padStart(2, "0")}</figcaption>
                       </figure>
                     ))
@@ -428,9 +466,81 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                 ) : null}
               </div>
             </footer>
-          </div>
-        </div>
-      ) : null}
+                </div>
+              </div>
+
+              {lightbox !== null && shots[lightbox] && (
+                <div
+                  className="pm-lb"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={`Screenshot ${lightbox + 1} of ${shots.length}`}
+                  onMouseDown={(event) => {
+                    if (event.target === event.currentTarget) setLightbox(null);
+                  }}
+                >
+                  <div className="pm-lb__bar">
+                    <span>
+                      {String(lightbox + 1).padStart(2, "0")} / {String(shots.length).padStart(2, "0")}
+                      <em>{selectedProject.title}</em>
+                    </span>
+                    <button type="button" onClick={() => setLightbox(null)} aria-label="Close image">
+                      CLOSE ×
+                    </button>
+                  </div>
+
+                  <figure className="pm-lb__stage">
+                    <Image
+                      key={shots[lightbox]}
+                      src={shots[lightbox]}
+                      alt={`${selectedProject.title} screenshot ${lightbox + 1}`}
+                      width={1280}
+                      height={860}
+                      sizes="92vw"
+                      priority
+                    />
+                  </figure>
+
+                  {shots.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        className="pm-lb__nav pm-lb__nav--prev"
+                        onClick={() => stepLightbox(-1)}
+                        aria-label="Previous screenshot"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        className="pm-lb__nav pm-lb__nav--next"
+                        onClick={() => stepLightbox(1)}
+                        aria-label="Next screenshot"
+                      >
+                        ›
+                      </button>
+
+                      <div className="pm-lb__strip">
+                        {shots.map((shot, index) => (
+                          <button
+                            key={shot}
+                            type="button"
+                            className={index === lightbox ? "is-active" : ""}
+                            onClick={() => setLightbox(index)}
+                            aria-label={`Screenshot ${index + 1}`}
+                          >
+                            <Image src={shot} alt="" width={120} height={80} sizes="120px" />
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </>,
+            document.body
+          )
+        : null}
     </section>
   );
 }

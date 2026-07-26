@@ -108,43 +108,46 @@ function TempusDiagram() {
   );
 }
 
-/** The advisor side of the IRS cycle. */
+/** The whole IRS cycle: what the student does, and what the advisor does back. */
 function SigmaDiagram() {
   return (
     <figure className="pdg">
-      <svg viewBox="0 0 700 250" className="pdg__svg" role="img" aria-label="IRS submission and advisor approval flow">
+      <svg viewBox="0 0 700 232" className="pdg__svg" role="img" aria-label="Full IRS cycle from student submission to advisor approval and monitoring">
         <Defs />
 
-        <LaneLabel x={0} y={14} text="STUDENT" tone="muted" />
-        <Node x={0} y={26} label="Files IRS" sub="each semester" tone="muted" />
-        <Arrow x1={132} y1={46} x2={186} y2={46} />
+        <LaneLabel x={0} y={22} text="STUDENT" tone="muted" />
+        <LaneLabel x={286} y={22} text="ACADEMIC ADVISOR — MY MODULE" tone="accent" />
 
-        <LaneLabel x={190} y={14} text="ACADEMIC ADVISOR — MY MODULE" tone="accent" />
-        <Node x={190} y={26} w={150} label="Approval queue" sub="filter + bulk action" tone="accent" />
+        {/* main path */}
+        <Node x={0} y={36} w={128} h={44} label="Fill IRS" sub="each semester" tone="muted" />
+        <Arrow x1={132} y1={58} x2={139} y2={58} />
+        <Node x={143} y={36} w={128} h={44} label="Submit" sub="within window" tone="muted" />
+        <Arrow x1={275} y1={58} x2={282} y2={58} />
+        <Node x={286} y={36} w={128} h={44} label="Approval queue" sub="filter + bulk" tone="accent" />
+        <Arrow x1={418} y1={58} x2={425} y2={58} />
+        <Node x={429} y={36} w={128} h={44} label="Approve" sub="or send back" tone="accent" />
+        <Arrow x1={561} y1={58} x2={568} y2={58} />
+        <Node x={572} y={36} w={128} h={44} label="History PDF" sub="per semester" tone="muted" />
 
-        <Arrow x1={265} y1={70} x2={265} y2={96} />
-        <Node x={190} y={100} w={150} label="Approve" tone="accent" />
+        {/* branch bracket down from the approval queue */}
+        <path d="M 350 80 L 350 112 L 636 112" className="pdg__bracket" />
+        <Arrow x1={350} y1={112} x2={350} y2={134} />
+        <Arrow x1={493} y1={112} x2={493} y2={134} />
+        <Arrow x1={636} y1={112} x2={636} y2={134} />
 
-        <Arrow x1={344} y1={46} x2={368} y2={46} />
-        <Node x={372} y={26} w={150} label="Grant revision" sub="within 2 weeks" tone="plain" />
-        <Arrow x1={447} y1={70} x2={447} y2={96} />
-        <Node x={372} y={100} w={150} label="Grant cancellation" sub="within 4 weeks" tone="plain" />
+        <Node x={286} y={138} w={128} h={44} label="Grant revision" sub="within 2 weeks" tone="accent" />
+        <Node x={429} y={138} w={128} h={44} label="Grant cancellation" sub="within 4 weeks" tone="accent" />
+        <Node x={572} y={138} w={128} h={44} label="Cohort recap" sub="who has not filed" tone="amber" />
 
-        <Arrow x1={526} y1={46} x2={550} y2={46} />
-        <Node x={554} y={26} w={146} label="Cohort recap" sub="who has not filed" tone="amber" />
-        <Arrow x1={627} y1={70} x2={627} y2={96} />
-        <Node x={554} y={100} w={146} label="IRS history" sub="print to PDF" tone="accent" />
-
-        <line x1={0} y1={158} x2={700} y2={158} className="pdg__divider" />
-        <text x={0} y={182} className="pdg__note">
-          One advisor carries a whole cohort, so the queue is built for volume:
+        <text x={0} y={210} className="pdg__note">
+          An advisor carries a whole cohort, so routine approvals clear in bulk
         </text>
-        <text x={0} y={200} className="pdg__note">
-          routine approvals go through in bulk, exceptions get attention.
+        <text x={0} y={226} className="pdg__note">
+          and the recap surfaces the students who still have not filed.
         </text>
       </svg>
       <figcaption className="pdg__caption">
-        Advisor workflows I built — requirements SRS-IRS-005 to 008.
+        The full IRS cycle. The advisor side — requirements SRS-IRS-005 to 008 — is the part I built.
       </figcaption>
     </figure>
   );

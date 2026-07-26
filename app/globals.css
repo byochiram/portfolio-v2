@@ -6589,3 +6589,158 @@ main > section {
   .pm__tabs { overflow-x: auto; }
   .pm__process li { grid-template-columns: 30px minmax(0, 1fr); gap: 9px; }
 }
+
+/* ══ GALLERY THUMBS + LIGHTBOX ══ */
+.pdg__bracket { fill: none; stroke: rgba(23, 52, 59, .3); stroke-width: 1.2; }
+.dark .pdg__bracket { stroke: rgba(237, 240, 232, .32); }
+
+.pm__shot {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+.pm__shot img { transition: transform .5s cubic-bezier(.16, 1, .3, 1); }
+.pm__shot:hover img { transform: scale(1.05); }
+.pm__shot-zoom {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(23, 52, 59, .78);
+  color: #f3f0e7;
+  font-size: 13px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .22s ease, transform .22s ease;
+}
+.pm__shot:hover .pm__shot-zoom,
+.pm__shot:focus-visible .pm__shot-zoom { opacity: 1; transform: none; }
+.pm__shot:focus-visible { outline: 2px solid #237169; outline-offset: 2px; }
+
+.pm-lb {
+  position: fixed;
+  z-index: 200;
+  inset: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px clamp(12px, 4vw, 48px) 18px;
+  background: rgba(9, 18, 20, .93);
+  animation: modalFade .25s ease both;
+}
+.pm-lb__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(243, 240, 231, .78);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+.pm-lb__bar em {
+  margin-left: 12px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: rgba(243, 240, 231, .5);
+  text-transform: none;
+}
+.pm-lb__bar button {
+  padding: 7px 13px;
+  border: 1px solid rgba(243, 240, 231, .28);
+  border-radius: 999px;
+  background: none;
+  color: rgba(243, 240, 231, .85);
+  font: inherit;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+.pm-lb__bar button:hover { background: rgba(243, 240, 231, .14); color: #fff; }
+
+.pm-lb__stage {
+  /* Flex (not grid + place-items) so the image's max-height resolves against a
+     definite height instead of an auto-sized implicit row. */
+  margin: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.pm-lb__stage img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .5);
+}
+
+.pm-lb__nav {
+  position: absolute;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(243, 240, 231, .22);
+  border-radius: 50%;
+  background: rgba(9, 18, 20, .6);
+  color: #f3f0e7;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background .2s ease, transform .2s ease;
+}
+.pm-lb__nav:hover { background: rgba(35, 113, 105, .85); }
+.pm-lb__nav--prev { left: clamp(6px, 2vw, 22px); }
+.pm-lb__nav--next { right: clamp(6px, 2vw, 22px); }
+.pm-lb__nav:focus-visible { outline: 2px solid #5fae99; outline-offset: 2px; }
+
+.pm-lb__strip {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.pm-lb__strip button {
+  flex: 0 0 auto;
+  width: 76px;
+  height: 50px;
+  padding: 0;
+  border: 1px solid rgba(243, 240, 231, .2);
+  border-radius: 7px;
+  background: none;
+  overflow: hidden;
+  opacity: .5;
+  cursor: pointer;
+  transition: opacity .2s ease, border-color .2s ease;
+}
+.pm-lb__strip button img { width: 100%; height: 100%; object-fit: cover; }
+.pm-lb__strip button:hover { opacity: .85; }
+.pm-lb__strip button.is-active { opacity: 1; border-color: #5fae99; }
+.pm-lb__strip::-webkit-scrollbar { height: 5px; }
+.pm-lb__strip::-webkit-scrollbar-thumb { background: rgba(243, 240, 231, .25); border-radius: 5px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pm__shot img, .pm__shot-zoom, .pm-lb { transition: none; animation: none; }
+}
+@media (max-width: 700px) {
+  .pm-lb__nav { width: 38px; height: 38px; font-size: 21px; }
+  .pm-lb__strip button { width: 58px; height: 40px; }
+}
