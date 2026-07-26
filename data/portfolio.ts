@@ -67,18 +67,6 @@ export const portfolio = {
     { name: "SQL", short: "SQL" },
     { name: "Database Design", short: "DB" },
   ] satisfies Skill[],
-  experience: {
-    role: "Intern Developer",
-    company: "BPSDMD Jawa Tengah",
-    period: "Internship",
-    bullets: [
-      "Rebuilt a legacy native PHP workflow into a structured admin-side training registration system for Civil Servants (ASN) across Central Java.",
-      "Delivered 28 use cases across training management, participant validation, certificates, dashboard analytics, and user management.",
-      "Integrated MANTRA API to automate ASN identity validation and reduce manual participant data entry.",
-      "Designed 3 core database tables and executed 144 black-box test scenarios before handover.",
-    ],
-    technologies: ["Laravel", "PHP", "Blade", "MySQL", "Bootstrap"],
-  },
   projects: [
     {
       title: "Tempus Auctions",

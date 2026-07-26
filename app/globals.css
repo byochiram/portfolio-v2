@@ -106,7 +106,7 @@ button { color: inherit; background: none; }
 .brand span { color: var(--accent); }
 
 .nav { display: flex; justify-content: center; gap: 2px; }
-.nav button, .language {
+.nav button {
   border-radius: 9px;
   color: var(--muted);
   font-size: 13px;
@@ -130,8 +130,7 @@ button { color: inherit; background: none; }
 .nav button:hover { color: var(--ink); }
 .nav button:hover::after, .nav button.active::after { width: 16px; }
 .nav button.active { color: var(--ink); font-weight: 700; }
-.language { color: var(--ink); display: flex; gap: 5px; align-items: center; font-weight: 700; font-size: 12px; }
-.language:hover { color: var(--accent); }
+
 .header-actions { display: flex; align-items: center; gap: 4px; }
 .theme-toggle {
   width: 34px; height: 34px;
@@ -513,37 +512,8 @@ button { color: inherit; background: none; }
 /* ── SKILLS ── */
 
 /* ── EXPERIENCE ── */
-.experience-card {
-  max-width: 800px;
-  margin: 40px auto 0;
-  padding: 32px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-md);
-  display: grid;
-  grid-template-columns: 52px 1fr auto;
-  gap: 18px;
-}
-.exp-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(8,145,178,.08));
-  color: var(--accent);
-  font-size: 20px;
-}
-.exp-title h3 { margin: 0 0 4px; font-size: 17px; font-weight: 700; }
-.exp-title p { margin: 0; color: var(--muted); font-size: 13px; }
-.exp-period { padding-top: 4px; color: var(--muted); font-size: 12px; font-weight: 600; white-space: nowrap; }
-.exp-bullets { grid-column: 2 / 4; margin-top: 8px; }
-.exp-bullets ul { margin: 0; padding-left: 18px; display: grid; gap: 10px; }
-.exp-bullets li { color: #555; font-size: 13px; line-height: 1.7; }
-.exp-tech { grid-column: 2 / 4; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.exp-tech-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-right: 4px; }
-.exp-tech span, .project-tags span {
+
+.project-tags span {
   display: inline-block;
   padding: 5px 10px;
   border-radius: 999px;
@@ -672,7 +642,7 @@ button { color: inherit; background: none; }
     background: rgba(42,116,108,.06);
   }
   .menu-button span { display: block; width: 14px; height: 1.5px; background: var(--ink); border-radius: 2px; }
-  .language { grid-column: 3; grid-row: 1; }
+  
   .menu-button { grid-column: 2; grid-row: 1; }
   .nav {
     position: absolute;
@@ -697,9 +667,9 @@ button { color: inherit; background: none; }
   .section-block { padding-top: 80px; }
   
   
-  .experience-card { grid-template-columns: 44px 1fr; padding: 20px; }
-  .exp-period { grid-column: 2; }
-  .exp-bullets, .exp-tech { grid-column: 1 / 3; }
+  
+  
+  
   .award-item { grid-template-columns: 40px 1fr; }
   .award-item .award-year { grid-column: 2; }
   
@@ -875,7 +845,7 @@ button { color: inherit; background: none; }
   .lanyard-card__shine { display: none; }
 }
 
-.about, .skills, .experience, .projects, .awards, .contact {
+.about, .skills, .projects, .awards, .contact {
   content-visibility: auto;
   contain-intrinsic-size: auto 500px;
 }
@@ -898,12 +868,6 @@ button { color: inherit; background: none; }
 .skills .section-label::before { background: rgba(255,255,255,.2); }
 .skills .section-title { color: white; }
 
-.experience {
-  background:
-    radial-gradient(circle at 10% 20%, rgba(37,99,235,.04), transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(8,145,178,.04), transparent 40%),
-    var(--bg);
-}
 .projects {
   background: #f0eeeb;
 }
@@ -1017,12 +981,7 @@ button { color: inherit; background: none; }
 }
 
 /* Full-width section canvases with one shared visual language. */
-.about,
-.skills,
-.experience,
-.projects,
-.awards,
-.contact {
+.about, .skills, .projects, .awards, .contact {
   position: relative;
   width: 100%;
   overflow: clip;
@@ -1040,11 +999,7 @@ button { color: inherit; background: none; }
     radial-gradient(circle at 50% 0%, rgba(42,116,108,.28), transparent 32%),
     linear-gradient(145deg, #111119, #153136 55%, #111118);
 }
-.experience {
-  background:
-    radial-gradient(circle at 8% 80%, rgba(45,123,255,.1), transparent 30%),
-    linear-gradient(135deg, #eef3fb, #e7edf7);
-}
+
 .projects {
   background:
     radial-gradient(circle at 92% 8%, rgba(255,126,75,.12), transparent 28%),
@@ -1123,26 +1078,6 @@ button { color: inherit; background: none; }
 /* Stack stays deliberately centered and compact. */
 
 /* Experience reads like one strong case, not a generic card list. */
-.experience-card {
-  position: relative;
-  max-width: none;
-  margin-top: 58px;
-  padding: clamp(26px, 4vw, 48px);
-  border-color: rgba(17,17,24,.08);
-  border-radius: 30px;
-  background: rgba(255,255,255,.58);
-  box-shadow: 0 28px 80px rgba(47,64,97,.1);
-}
-.experience-card::before {
-  content: "01";
-  position: absolute;
-  right: 28px;
-  bottom: 8px;
-  color: rgba(17,17,24,.045);
-  font-family: var(--font-anton), "Anton", sans-serif;
-  font-size: 110px;
-  line-height: 1;
-}
 
 /* Project gallery uses real UI previews from the previous portfolio. */
 
@@ -1235,7 +1170,7 @@ button { color: inherit; background: none; }
     radial-gradient(circle at 88% 22%, rgba(42,116,108,.16), transparent 27%),
     linear-gradient(135deg, #17171f, #121219);
 }
-.dark .experience { background: linear-gradient(135deg, #151b25, #10151e); }
+
 .dark .projects { background: linear-gradient(145deg, #1a1715, #121214); }
 .dark .awards {
   background:
@@ -1284,11 +1219,7 @@ button { color: inherit; background: none; }
   
   .about-lanyard__note { right: 0; }
   
-  .experience-card {
-    grid-template-columns: 42px 1fr;
-    margin-top: 42px;
-    border-radius: 22px;
-  }
+  
   
   
   

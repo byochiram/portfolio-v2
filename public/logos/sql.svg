@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="SQL database">
+  <g fill="none" stroke="#3E93C8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="64" cy="28" rx="42" ry="16"/>
+    <path d="M22 28v72c0 8.8 18.8 16 42 16s42-7.2 42-16V28"/>
+    <path d="M22 52c0 8.8 18.8 16 42 16s42-7.2 42-16"/>
+    <path d="M22 76c0 8.8 18.8 16 42 16s42-7.2 42-16"/>
+  </g>
+</svg>

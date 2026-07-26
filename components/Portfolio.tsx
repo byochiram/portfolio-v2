@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { portfolio } from "@/data/portfolio";
 import Hero from "@/components/Hero";
 import Intro from "@/components/Intro";
 import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
-import ExperienceSection from "@/components/ExperienceSection";
 import AwardsSection from "@/components/AwardsSection";
 import ContactSection from "@/components/ContactSection";
 
@@ -19,57 +18,30 @@ const navItems = [
   ["contact", "Contact"],
 ] as const;
 
+const copy = {
+  eyebrow: "HELLO, I AM",
+  projects: "View Projects",
+  contact: "Contact Me",
+  aboutTitle: "Beyond the headline",
+  aboutLabel: "BACKGROUND",
+  skillsTitle: "Tools I build with",
+  skillsLabel: "TECH STACK",
+  projectsTitle: "Selected projects",
+  projectsLabel: "PROJECTS",
+  awardsTitle: "Learning highlights",
+  awardsLabel: "CREDENTIALS",
+  contactTitle: "Let's connect.",
+  contactLabel: "CONTACT",
+  contactBody:
+    "Feel free to reach out about opportunities, collaborations, or simply to start a conversation.",
+} as const;
+
 export default function Portfolio() {
   const [mounted, setMounted] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
-  const [language, setLanguage] = useState<"EN" | "ID">("EN");
   const [headerVisible, setHeaderVisible] = useState(false);
-
-  const copy = useMemo(
-    () =>
-      language === "EN"
-        ? {
-            eyebrow: "HELLO, I AM",
-            projects: "View Projects",
-            contact: "Contact Me",
-            aboutTitle: "Beyond the headline",
-            aboutLabel: "BACKGROUND",
-            skillsTitle: "Tools I build with",
-            skillsLabel: "TECH STACK",
-            experienceTitle: "Experience in practice",
-            experienceLabel: "EXPERIENCE",
-            projectsTitle: "Selected projects",
-            projectsLabel: "PROJECTS",
-            awardsTitle: "Learning highlights",
-            awardsLabel: "CREDENTIALS",
-            contactTitle: "Let's connect.",
-            contactLabel: "CONTACT",
-            contactBody:
-              "Feel free to reach out about opportunities, collaborations, or simply to start a conversation.",
-          }
-        : {
-            eyebrow: "HALO, SAYA",
-            projects: "Lihat Proyek",
-            contact: "Hubungi Saya",
-            aboutTitle: "Lebih dari sekadar profil",
-            aboutLabel: "LATAR BELAKANG",
-            skillsTitle: "Teknologi yang saya gunakan",
-            skillsLabel: "TECH STACK",
-            experienceTitle: "Pengalaman dalam praktik",
-            experienceLabel: "PENGALAMAN",
-            projectsTitle: "Proyek pilihan",
-            projectsLabel: "PROYEK",
-            awardsTitle: "Perjalanan belajar",
-            awardsLabel: "SERTIFIKASI",
-            contactTitle: "Mari terhubung.",
-            contactLabel: "KONTAK",
-            contactBody:
-              "Silakan hubungi saya untuk peluang kerja, kolaborasi, atau sekadar memulai percakapan.",
-          },
-    [language]
-  );
 
   useEffect(() => {
     setMounted(true);
@@ -194,14 +166,6 @@ export default function Portfolio() {
 
         <div className="header-actions">
           <button
-            className="language"
-            onClick={() => setLanguage((value) => (value === "EN" ? "ID" : "EN"))}
-            aria-label={`Switch language to ${language === "EN" ? "Indonesian" : "English"}`}
-          >
-            {language}
-            <span aria-hidden="true">⌄</span>
-          </button>
-          <button
             className="theme-toggle"
             onClick={() => document.documentElement.classList.toggle("dark")}
             aria-label="Toggle dark mode"
@@ -217,7 +181,6 @@ export default function Portfolio() {
         <AboutSection copy={copy} />
         <SkillsSection copy={copy} />
         <ProjectsSection copy={copy} />
-        <ExperienceSection copy={copy} />
         <AwardsSection copy={copy} />
         <ContactSection copy={copy} />
       </main>

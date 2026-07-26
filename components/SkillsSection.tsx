@@ -28,7 +28,7 @@ const stackGroups: StackGroup[] = [
       { name: "TypeScript", mark: "TS", logo: "/logos/typescript.svg" },
       { name: "Python", mark: "PY", logo: "/logos/python.svg" },
       { name: "PHP", mark: "PHP", logo: "/logos/php.svg" },
-      { name: "SQL", mark: "SQL" },
+      { name: "SQL", mark: "SQL", logo: "/logos/sql.svg" },
     ],
   },
   {
@@ -68,7 +68,7 @@ const stackGroups: StackGroup[] = [
       { name: "Postman", mark: "PM", logo: "/logos/postman.svg" },
       { name: "Docker", mark: "DK", logo: "/logos/docker.svg" },
       { name: "Claude", mark: "CL", logo: "/logos/claude.svg" },
-      { name: "ChatGPT", mark: "GPT" },
+      { name: "ChatGPT", mark: "GPT", logo: "/logos/chatgpt.svg", invert: true },
       {
         name: "Antigravity",
         mark: "AG",
