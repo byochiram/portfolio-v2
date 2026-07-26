@@ -7203,3 +7203,26 @@ html:not(.intro-done) .site-header {
 .projects .project-card--preview.project-card--sheet:hover {
   transform: translateY(-4px);
 }
+
+/* ══ LABEL DI KARTU TIDAK BOLEH MENANGKAP KLIK ══ */
+
+/* Bug yang lahir dari perombakan kartu. Dulu seluruh kartu adalah satu
+   <button>, jadi klik pada anak mana pun menggelembung ke tombol itu dan modal
+   terbuka. Setelah tombolnya diganti lapisan penutup, anak yang tergambar di
+   ATAS lapisan itu berhenti meneruskan klik: VIEW CASE punya z-index 3
+   melawan lapisan klik yang 1, dan chip nomor serta jenis proyek juga di
+   atasnya. Akibatnya justru tulisan VIEW CASE — bagian yang paling mengundang
+   klik — tidak melakukan apa-apa.
+   Ketiganya murni label, bukan kendali, jadi dibuat tembus klik. Tombol Play
+   game sengaja tidak ikut karena ia memang tautan sungguhan. */
+.projects .project-card--preview.project-card--sheet .project-preview__action,
+.projects .project-card--preview.project-card--sheet .project-preview__topline,
+.projects .project-card--preview.project-card--sheet .project-preview__topline span,
+.projects .project-card--preview.project-card--sheet .project-preview img,
+.projects .project-card--preview.project-card--sheet .project-preview-copy {
+  pointer-events: none;
+}
+/* Kecuali yang ini: tautan sungguhan, harus tetap bisa diklik. */
+.projects .project-card--preview.project-card--sheet .project-card__play {
+  pointer-events: auto;
+}
