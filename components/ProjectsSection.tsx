@@ -4,9 +4,11 @@ import { memo, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { portfolio, Project } from "@/data/portfolio";
 import Icon from "@/components/Icon";
+import ProjectDiagram from "@/components/ProjectDiagram";
 
 type Copy = { projectsTitle: string; projectsLabel: string };
 type ProjectCategory = "Web" | "Game" | "Data";
+type ModalTab = "Overview" | "Process" | "Gallery";
 
 const projectGroups: { label: ProjectCategory; caption: string }[] = [
   { label: "Web", caption: "Systems & platforms" },
@@ -113,10 +115,21 @@ function ProjectVisual({
 function ProjectsSection({ copy }: { copy: Copy }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [activeTab, setActiveTab] = useState<ProjectCategory>("Web");
+  const [modalTab, setModalTab] = useState<ModalTab>("Overview");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Only offer a tab when the project actually has that material.
+  const modalTabs: ModalTab[] = selectedProject
+    ? ([
+        "Overview",
+        ...(selectedProject.process?.length ? ["Process"] : []),
+        ...(selectedProject.screenshots?.length ? ["Gallery"] : []),
+      ] as ModalTab[])
+    : [];
 
   useEffect(() => {
     if (!selectedProject) return;
+    setModalTab("Overview");
 
     const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
@@ -250,79 +263,171 @@ function ProjectsSection({ copy }: { copy: Copy }) {
               CLOSE ×
             </button>
 
+            <header className="pm__head">
+              <div className="project-modal__eyebrow">{selectedProject.badge}</div>
+              <h3 id="project-modal-title">{selectedProject.title}</h3>
+              <p className="pm__subtitle">{selectedProject.subtitle}</p>
+
+              {(selectedProject.role || selectedProject.method) && (
+                <p className="pm__meta">
+                  {selectedProject.role}
+                  {selectedProject.role && selectedProject.method ? (
+                    <span aria-hidden="true"> · </span>
+                  ) : null}
+                  {selectedProject.method && <em>{selectedProject.method}</em>}
+                </p>
+              )}
+
+              <div className="project-tags pm__tags">
+                {selectedProject.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </div>
+            </header>
+
+            {modalTabs.length > 1 && (
+              <div className="pm__tabs" role="tablist" aria-label="Project detail sections">
+                {modalTabs.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    role="tab"
+                    id={`pm-tab-${t}`}
+                    aria-selected={modalTab === t}
+                    aria-controls="pm-panel"
+                    className={`pm__tab ${modalTab === t ? "is-active" : ""}`}
+                    onClick={() => setModalTab(t)}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div
-              className={`project-modal__visual ${
-                selectedProject.gameUrl ? "project-modal__visual--game" : ""
-              }`}
+              className="pm__panel"
+              id="pm-panel"
+              role="tabpanel"
+              aria-labelledby={`pm-tab-${modalTab}`}
             >
-              <div className="project-modal__gallery">
-                {selectedProject.screenshots?.length ? (
-                  selectedProject.screenshots.map((screenshot, index) => (
-                    <figure key={screenshot}>
-                      <Image
-                        src={screenshot}
-                        alt={`${selectedProject.title} screenshot ${index + 1}`}
-                        width={900}
-                        height={620}
-                        sizes="(max-width: 900px) 92vw, 60vw"
-                        loading={index === 0 ? "eager" : "lazy"}
-                      />
-                      <figcaption>{String(index + 1).padStart(2, "0")}</figcaption>
-                    </figure>
-                  ))
-                ) : (
-                  <figure className="project-modal__gallery-single">
-                    <ProjectVisual project={selectedProject} eager />
-                  </figure>
-                )}
-              </div>
-              <span>{selectedProject.kind}</span>
-            </div>
+              {modalTab === "Overview" && (
+                <div className="pm__overview">
+                  {selectedProject.problem ? (
+                    <>
+                      <section className="pm__block">
+                        <h4>The problem</h4>
+                        <p>{selectedProject.problem}</p>
+                      </section>
+                      <section className="pm__block">
+                        <h4>The solution</h4>
+                        <p>{selectedProject.solution}</p>
+                      </section>
+                    </>
+                  ) : (
+                    <section className="pm__block">
+                      <h4>About</h4>
+                      <p>{selectedProject.description}</p>
+                    </section>
+                  )}
 
-            <div className="project-modal__content">
-              <div className="project-modal__intro">
-                <div>
-                  <div className="project-modal__eyebrow">{selectedProject.badge}</div>
-                  <h3 id="project-modal-title">{selectedProject.title}</h3>
-                  <p className="project-modal__subtitle">{selectedProject.subtitle}</p>
+                  {selectedProject.metrics?.length ? (
+                    <ul className="pm__metrics">
+                      {selectedProject.metrics.map((m) => (
+                        <li key={m.label}>
+                          <b>{m.value}</b>
+                          <span>{m.label}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+
+                  {selectedProject.diagram && (
+                    <ProjectDiagram kind={selectedProject.diagram} />
+                  )}
+
+                  {selectedProject.hardPart && (
+                    <section className="pm__block pm__hard">
+                      <h4>{selectedProject.hardPart.title}</h4>
+                      <p>{selectedProject.hardPart.body}</p>
+                    </section>
+                  )}
+
+                  <section className="pm__block">
+                    <h4>What it does</h4>
+                    <ul className="project-modal__highlights">
+                      {selectedProject.bullets.map((bullet) => (
+                        <li key={bullet}>{bullet}</li>
+                      ))}
+                    </ul>
+                  </section>
+
+                  {selectedProject.documentation && (
+                    <p className="pm__doc">{selectedProject.documentation}</p>
+                  )}
                 </div>
-                <p className="project-modal__description">{selectedProject.description}</p>
-              </div>
+              )}
 
-              <div className="project-modal__details">
-                <ul className="project-modal__highlights">
-                  {selectedProject.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
+              {modalTab === "Process" && selectedProject.process && (
+                <ol className="pm__process">
+                  {selectedProject.process.map((step, index) => (
+                    <li key={step.phase}>
+                      <span className="pm__step-no">{String(index + 1).padStart(2, "0")}</span>
+                      <div>
+                        <h4>{step.phase}</h4>
+                        <p>{step.did}</p>
+                        {step.artifact && (
+                          <span className="pm__artifact">{step.artifact}</span>
+                        )}
+                      </div>
+                    </li>
                   ))}
-                </ul>
+                </ol>
+              )}
 
-                <div>
-                  <div className="project-tags">
-                    {selectedProject.tags.map((tag) => (
-                      <span key={tag}>{tag}</span>
-                    ))}
-                  </div>
-
-                  <div className="project-links">
-                    {selectedProject.gameUrl ? (
-                      <a className="project-play" href={selectedProject.gameUrl}>
-                        Play game <span aria-hidden="true">→</span>
-                      </a>
-                    ) : null}
-                    {selectedProject.liveUrl !== "#" && !selectedProject.gameUrl ? (
-                      <a href={selectedProject.liveUrl} target="_blank" rel="noreferrer">
-                        Visit project <Icon name="external" size={14} />
-                      </a>
-                    ) : null}
-                    {selectedProject.repoUrl !== "#" ? (
-                      <a href={selectedProject.repoUrl} target="_blank" rel="noreferrer">
-                        <Icon name="code" size={14} /> Source code
-                      </a>
-                    ) : null}
-                  </div>
+              {modalTab === "Gallery" && (
+                <div className="project-modal__gallery">
+                  {selectedProject.screenshots?.length ? (
+                    selectedProject.screenshots.map((screenshot, index) => (
+                      <figure key={screenshot}>
+                        <Image
+                          src={screenshot}
+                          alt={`${selectedProject.title} screenshot ${index + 1}`}
+                          width={900}
+                          height={620}
+                          sizes="(max-width: 900px) 92vw, 60vw"
+                          loading={index === 0 ? "eager" : "lazy"}
+                        />
+                        <figcaption>{String(index + 1).padStart(2, "0")}</figcaption>
+                      </figure>
+                    ))
+                  ) : (
+                    <figure className="project-modal__gallery-single">
+                      <ProjectVisual project={selectedProject} eager />
+                    </figure>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
+
+            <footer className="pm__foot">
+              <div className="project-links">
+                {selectedProject.gameUrl ? (
+                  <a className="project-play" href={selectedProject.gameUrl}>
+                    Play game <span aria-hidden="true">→</span>
+                  </a>
+                ) : null}
+                {selectedProject.liveUrl !== "#" && !selectedProject.gameUrl ? (
+                  <a href={selectedProject.liveUrl} target="_blank" rel="noreferrer">
+                    Visit project <Icon name="external" size={14} />
+                  </a>
+                ) : null}
+                {selectedProject.repoUrl !== "#" ? (
+                  <a href={selectedProject.repoUrl} target="_blank" rel="noreferrer">
+                    <Icon name="code" size={14} /> Source code
+                  </a>
+                ) : null}
+              </div>
+            </footer>
           </div>
         </div>
       ) : null}

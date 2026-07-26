@@ -3,6 +3,18 @@ export type Skill = {
   short: string;
 };
 
+/** One phase of the delivery process, and what was actually produced in it. */
+export type ProcessStep = {
+  phase: string;
+  did: string;
+  artifact?: string;
+};
+
+export type Metric = {
+  value: string;
+  label: string;
+};
+
 export type Project = {
   title: string;
   subtitle: string;
@@ -18,6 +30,18 @@ export type Project = {
   badge?: string;
   gameUrl?: string;
   gameIcon?: string;
+
+  // Case-study fields. Present on the documented projects; the modal degrades
+  // gracefully to a short overview when they are absent.
+  problem?: string;
+  solution?: string;
+  role?: string;
+  method?: string;
+  hardPart?: { title: string; body: string };
+  metrics?: Metric[];
+  process?: ProcessStep[];
+  diagram?: "tempus" | "sigma" | "sipp";
+  documentation?: string;
 };
 
 export const portfolio = {
@@ -83,14 +107,72 @@ export const portfolio = {
       liveUrl: "https://auctions.kakros.id/",
       repoUrl: "https://github.com/byochiram/watch-auction-system",
       visual: "auction",
-      previewUrl: "https://my.rosispace.workers.dev/projects/tempus/preview-1.webp",
+      previewUrl: "/projects/tempus/preview-1.webp",
       screenshots: [
-        "https://my.rosispace.workers.dev/projects/tempus/preview-1.webp",
-        "https://my.rosispace.workers.dev/projects/tempus/preview-2.webp",
-        "https://my.rosispace.workers.dev/projects/tempus/preview-3.webp",
+        "/projects/tempus/preview-1.webp",
+        "/projects/tempus/preview-2.webp",
+        "/projects/tempus/preview-3.webp",
+        "/projects/tempus/preview-4.webp",
+        "/projects/tempus/preview-5.webp",
+        "/projects/tempus/preview-6.webp",
+        "/projects/tempus/preview-7.webp",
+        "/projects/tempus/preview-8.webp",
+        "/projects/tempus/preview-9.webp",
       ],
       kind: "Web App",
       badge: "Live Project",
+      problem:
+        "Tempus sold collectible watches at a fixed price on WooCommerce. But a collectible's value moves with rarity, condition and demand, so a price set by one side often misses what the market would actually pay. Part of the selling also happened over Instagram DMs, outside the system entirely.",
+      solution:
+        "A web auction platform that lets the market set the price, covering the full path from scheduling a lot to bidding, winner payment and shipping.",
+      role: "Solo — full-stack, from requirements to testing",
+      method: "ICONIX Process",
+      hardPart: {
+        title: "Keeping the closing minutes honest",
+        body:
+          "Two rules do the work. Anti-sniping extends the closing time when a bid lands in the final moments, so a last-second bid cannot steal a lot before anyone can respond. And an unpaid win is never handed to the runner-up — the lot is rescheduled instead. That removes the incentive to win a lot cheaply and simply walk away. Payment runs on a 24-hour invoice; miss it and bidding is suspended for a week while the account still works.",
+      },
+      metrics: [
+        { value: "17", label: "use cases" },
+        { value: "161", label: "test scenarios" },
+        { value: "4", label: "user roles" },
+        { value: "100%", label: "tests passed" },
+      ],
+      process: [
+        {
+          phase: "Requirement Gathering",
+          did: "Walked the live WooCommerce store and the Instagram channel to see how selling actually worked, then interviewed the owner to confirm the flow and pin down the auction rules.",
+          artifact: "AS-IS and TO-BE activity diagrams",
+        },
+        {
+          phase: "Requirement Analysis",
+          did: "Turned the interview into functional requirements, then modelled the domain and mapped 17 use cases across guest, bidder, admin and superadmin.",
+          artifact: "Domain model, use case diagram",
+        },
+        {
+          phase: "Preliminary Design",
+          did: "Traced every use case through both its success path and its failure paths, which is where the payment-timeout and suspension rules got settled.",
+          artifact: "Robustness diagrams",
+        },
+        {
+          phase: "Detailed Design",
+          did: "Specified object interactions and the database structure, and drew the screens before writing them.",
+          artifact: "Sequence diagram, class diagram, 25 GUI storyboards",
+        },
+        {
+          phase: "Implementation",
+          did: "Built it in Laravel with Blade: catalog and lot detail, email-verified registration, bidding with anti-sniping, payment through a gateway, and shipping cost from a courier API.",
+          artifact: "Working system",
+        },
+        {
+          phase: "Testing",
+          did: "Ran 161 black-box scenarios over all 17 use cases before handover; every scenario returned the expected result.",
+          artifact: "Black-box test report",
+        },
+      ],
+      diagram: "tempus",
+      documentation:
+        "Documented end to end in a 246-page undergraduate thesis, from requirements through black-box testing.",
     },
     {
       title: "SiGMA",
@@ -107,14 +189,69 @@ export const portfolio = {
       liveUrl: "https://sigma.kakros.id/",
       repoUrl: "https://github.com/byochiram/SigmaPPL",
       visual: "academic",
-      previewUrl: "https://my.rosispace.workers.dev/projects/sigma/preview-1.webp",
+      previewUrl: "/projects/sigma/preview-1.webp",
       screenshots: [
-        "https://my.rosispace.workers.dev/projects/sigma/preview-1.webp",
-        "https://my.rosispace.workers.dev/projects/sigma/preview-2.webp",
-        "https://my.rosispace.workers.dev/projects/sigma/preview-3.webp",
+        "/projects/sigma/preview-1.webp",
+        "/projects/sigma/preview-2.webp",
+        "/projects/sigma/preview-3.webp",
+        "/projects/sigma/preview-4.webp",
+        "/projects/sigma/preview-5.webp",
+        "/projects/sigma/preview-6.webp",
+        "/projects/sigma/preview-7.webp",
+        "/projects/sigma/preview-8.webp",
+        "/projects/sigma/preview-9.webp",
+        "/projects/sigma/preview-10.webp",
+        "/projects/sigma/preview-11.webp",
       ],
       kind: "Web App",
       badge: "1st Place",
+      problem:
+        "Every active semester, UNDIP students file an IRS study plan under academic rules and hard deadlines — two weeks to revise, four to cancel. Their academic advisor has to approve each one, grant permission for revisions and cancellations, know who has not filed yet, and produce IRS history per advisee. Tracking that by hand across a full cohort is slow and easy to lose.",
+      solution:
+        "A web system for the whole IRS cycle. I owned the academic advisor side of it.",
+      role:
+        "Team capstone — I built the Academic Advisor module (SRS-IRS-005 to 008)",
+      method: "ICONIX Process",
+      hardPart: {
+        title: "Approval that scales past one student at a time",
+        body:
+          "An advisor carries a whole cohort, so approving submissions one by one does not hold up. The module leans on filtering and clear status states, with bulk approval for the routine cases so attention goes to the exceptions. It also had to answer the question advisors ask most — who has not filed yet — and print approved IRS history to PDF per advisee.",
+      },
+      metrics: [
+        { value: "4", label: "advisor workflows" },
+        { value: "1st", label: "place, capstone" },
+        { value: "PDF", label: "history export" },
+      ],
+      process: [
+        {
+          phase: "Requirement Gathering",
+          did: "Team mapped the existing IRS rules — filing windows, revision and cancellation periods — into a written spec.",
+          artifact: "Business process, SRS",
+        },
+        {
+          phase: "Requirement Analysis",
+          did: "Split the system between student and advisor actors; my four requirements covered approval, permissions, recap and advisee history.",
+          artifact: "Use case diagram, domain model",
+        },
+        {
+          phase: "Preliminary Design",
+          did: "Worked each advisor use case through its success and failure paths before building.",
+          artifact: "Robustness diagrams",
+        },
+        {
+          phase: "Detailed Design",
+          did: "Specified the interactions and screens for the advisor module.",
+          artifact: "Sequence diagram, class diagram, storyboards",
+        },
+        {
+          phase: "Implementation",
+          did: "Built the advisor module in Laravel: approval queue with filters and bulk actions, revision and cancellation permissions, cohort recap, and PDF export.",
+          artifact: "Advisor module",
+        },
+      ],
+      diagram: "sigma",
+      documentation:
+        "Documented by the team in a 99-page ICONIX report for the Software Development capstone, which placed first.",
     },
     {
       title: "SIPP",
@@ -131,14 +268,55 @@ export const portfolio = {
       liveUrl: "#",
       repoUrl: "#",
       visual: "training",
-      previewUrl: "https://my.rosispace.workers.dev/projects/sipp/preview-1.webp",
+      previewUrl: "/projects/sipp/preview-1.webp",
       screenshots: [
-        "https://my.rosispace.workers.dev/projects/sipp/preview-1.webp",
-        "https://my.rosispace.workers.dev/projects/sipp/preview-2.webp",
-        "https://my.rosispace.workers.dev/projects/sipp/preview-3.webp",
+        "/projects/sipp/preview-1.webp",
+        "/projects/sipp/preview-2.webp",
+        "/projects/sipp/preview-3.webp",
+        "/projects/sipp/preview-4.webp",
       ],
       kind: "Web App",
       badge: "Internship",
+      problem:
+        "BPSDMD Central Java runs training for civil servants across the province, but registration sat on a legacy native-PHP workflow. Participant identity was typed in by hand, which is slow at provincial scale and lets typos through into records that later become certificates.",
+      solution:
+        "A rebuilt admin-side registration system on Laravel covering training management, participant validation, certificates and dashboard analytics.",
+      role: "Intern developer — admin side of the system",
+      hardPart: {
+        title: "Letting the source of truth do the typing",
+        body:
+          "Instead of trusting hand-typed civil-servant data, the system calls the government MANTRA API to validate identity at entry, so records start correct rather than being corrected later. Certificate generation is guarded too — the system compares the training date against today before it will issue anything, which stops certificates being produced for training that has not happened yet.",
+      },
+      metrics: [
+        { value: "28", label: "use cases" },
+        { value: "144", label: "test scenarios" },
+        { value: "3", label: "core tables" },
+      ],
+      process: [
+        {
+          phase: "Requirement Gathering",
+          did: "Studied the legacy native-PHP workflow already in use and confirmed what the training administrators actually needed it to do.",
+          artifact: "Requirement list",
+        },
+        {
+          phase: "Design",
+          did: "Restructured the flow into 28 use cases and designed three core tables to replace the ad-hoc legacy structure.",
+          artifact: "Use cases, database design",
+        },
+        {
+          phase: "Implementation",
+          did: "Built the admin system in Laravel: training management, participant validation through the MANTRA API, certificate generation, dashboard analytics and user management.",
+          artifact: "Working system",
+        },
+        {
+          phase: "Testing",
+          did: "Ran 144 black-box scenarios across the use cases before handing the system over to the agency.",
+          artifact: "Black-box test report",
+        },
+      ],
+      diagram: "sipp",
+      documentation:
+        "Documented in an internship report covering the requirements, design and the full test-scenario table.",
     },
     {
       title: "Mall Kakros",
