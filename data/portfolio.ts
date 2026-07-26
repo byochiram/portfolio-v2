@@ -43,6 +43,8 @@ export type Project = {
   diagram?: "tempus" | "sigma" | "sipp";
   /** Shown when a project cannot simply be opened in a browser. */
   access?: string;
+  /** Extra destinations beyond live site and repo — notebooks, datasets. */
+  links?: { label: string; url: string }[];
 };
 
 export const portfolio = {
@@ -506,7 +508,7 @@ export const portfolio = {
       ],
       tags: ["JavaScript", "PWA", "Game Logic", "Web Audio"],
       liveUrl: "/games/guess-country/index.html",
-      repoUrl: "#",
+      repoUrl: "https://github.com/byochiram/guess-country",
       visual: "game",
       previewUrl: "",
       gameUrl: "/games/guess-country/index.html",
@@ -527,7 +529,7 @@ export const portfolio = {
       ],
       tags: ["Canvas", "JavaScript", "PWA", "Web Audio"],
       liveUrl: "/games/flappy-bird/index.html",
-      repoUrl: "#",
+      repoUrl: "https://github.com/byochiram/flappy-bird",
       visual: "game",
       previewUrl: "",
       gameUrl: "/games/flappy-bird/index.html",
@@ -551,24 +553,35 @@ export const portfolio = {
       repoUrl: "https://github.com/byochiram/pcos-diagnosis",
       visual: "data",
       previewUrl: "/projects/pcos/preview-1.webp",
-      screenshots: ["/projects/pcos/preview-1.webp"],
+      screenshots: [
+        "/projects/pcos/preview-1.webp",
+        "/projects/pcos/preview-2.webp",
+        "/projects/pcos/preview-3.webp",
+        "/projects/pcos/preview-4.webp",
+      ],
       kind: "Data",
       badge: "ML App",
+      links: [
+        {
+          label: "Notebook",
+          url: "https://colab.research.google.com/drive/1-PPUvfObI-09P4q7pcNfHISAqACJFfKQ",
+        },
+      ],
       problem:
         "PCOS is diagnosed from a scatter of clinical indicators, and the dataset reflects how uneven that is — of 541 patients, only about a third actually have it. Train a model on that as-is and it learns the cheapest possible trick: answer \"no\" every time and still look accurate.",
       solution:
         "A model that is corrected for the imbalance and can explain itself, plus a dashboard that shows which indicators do the separating.",
-      role: "Solo — data preparation, modelling and dashboard",
+      role: "University group project — coursework",
       hardPart: {
         title: "An accurate model that is still useless",
         body:
-          "With a 67/33 split, always guessing \"not PCOS\" scores 67% accuracy while catching zero actual cases — which is the one outcome that matters here. SMOTE rebalances the training data so the minority class carries real weight, and Random Forest and XGBoost are then compared on the same untouched test set rather than on the resampled data. The app also shows feature importance, because a risk score a person cannot interrogate is not something to hand to anyone. It is labelled an educational tool throughout, not a diagnosis.",
+          "With a 67/33 split, always guessing \"not PCOS\" scores 67% accuracy while catching zero actual cases — which is the one outcome that matters here. SMOTE rebalances the training data so the minority class carries real weight, and Random Forest and XGBoost are then compared on the same untouched test set. XGBoost won on F1 (0.882 against 0.865) and took the higher precision, 0.938 to 0.842; Random Forest actually caught more true cases, 0.889 recall to 0.833. That trade-off is the whole decision, and it is worth naming rather than reporting one accuracy figure. The app shows feature importance too, because a risk score nobody can interrogate should not be handed to anyone — and it is labelled an educational tool on every screen, not a diagnosis.",
       },
       metrics: [
         { value: "541", label: "patients" },
         { value: "11", label: "clinical features" },
-        { value: "2", label: "models compared" },
-        { value: "33%", label: "positive class" },
+        { value: "93%", label: "accuracy" },
+        { value: "0.88", label: "F1 score" },
       ],
       process: [
         {
@@ -602,11 +615,11 @@ export const portfolio = {
       title: "Student Lifestyle Clustering",
       subtitle: "Finding student types with K-Means",
       description:
-        "K-Means over the daily habits of 2,000 students — study, sleep, social and physical hours against GPA and stress — with a live app that places any new student on the cluster map.",
+        "K-Means over the daily habits of 2,000 students — study, sleep, social and physical hours against GPA and stress. It settles on two types: the academic focuser and the balanced all-rounder.",
       bullets: [
+        "Two clusters found: \"Si Fokus Akademik\" and \"Si Aktif & Seimbang\"",
         "K-Means over seven lifestyle features, mapped to 2D with PCA",
-        "Move the sliders and see which cluster you land in, live",
-        "Cluster averages with a written interpretation of each group",
+        "Move the sliders and see which type you land in, live",
         "Batch mode: upload a CSV, cluster everyone, download the result",
       ],
       tags: ["Python", "scikit-learn", "K-Means", "Streamlit", "Power BI"],
@@ -614,24 +627,44 @@ export const portfolio = {
       repoUrl: "https://github.com/byochiram/student-lifestyle-clustering",
       visual: "data",
       previewUrl: "/projects/student/preview-1.webp",
-      screenshots: ["/projects/student/preview-1.webp"],
+      screenshots: [
+        "/projects/student/preview-1.webp",
+        "/projects/student/preview-2.webp",
+        "/projects/student/preview-3.webp",
+        "/projects/student/preview-4.webp",
+        "/projects/student/preview-5.webp",
+      ],
       kind: "Data",
       badge: "Clustering",
+      links: [
+        {
+          label: "Notebook",
+          url: "https://colab.research.google.com/drive/1cf3stFI7x_rKccUmRE9h1TgI7ysSbPrP",
+        },
+        {
+          label: "Notebook 2",
+          url: "https://colab.research.google.com/drive/1TelgFfyzQJBkitcXCdBkehwjat12zT9y",
+        },
+        {
+          label: "Dataset",
+          url: "https://drive.google.com/drive/folders/1Wp5SnZe3QF2qQq5WXetyUglGUpQVzs0L",
+        },
+      ],
       problem:
         "Advice for students is usually one-size-fits-all, but 2,000 students do not share one lifestyle. There are no labels in this data saying which type someone is, so the groups have to be found rather than looked up.",
       solution:
         "Cluster students by how they actually spend a day, then let anyone drop their own habits in and see which group they fall into.",
-      role: "Solo — clustering, app and dashboard",
+      role: "University group project — coursework",
       hardPart: {
         title: "The result that argued with the assumption",
         body:
-          "The expectation going in was that stress drags grades down. The data says the opposite: average GPA climbs with stress level — 2.82 at low, 3.02 at moderate, 3.26 at high — and so do study hours, from 5.5 to 8.4 a day. Stress here tracks effort, not failure. That is worth stating carefully rather than dressing up as a finding about wellbeing, and it is also why the dashboard reports stress alongside hours instead of on its own. More than half of the cohort sits in the high-stress group.",
+          "The expectation going in was that stress drags grades down. The data says the opposite: average GPA climbs with stress level — 2.82 at low, 3.02 at moderate, 3.26 at high — and study hours climb with it, from 5.5 to 8.4 a day. The clusters land on the same split. \"Si Fokus Akademik\" studies 8.75 hours for a 3.34 GPA and carries the higher stress; \"Si Aktif & Seimbang\" studies 6.37, exercises nearly twice as much, and sits at 2.92 with barely any stress. So stress here tracks effort, not failure — worth stating plainly rather than dressing up as a finding about wellbeing. Over half the cohort is in the high-stress group.",
       },
       metrics: [
         { value: "2,000", label: "students" },
+        { value: "2", label: "clusters found" },
         { value: "7", label: "lifestyle features" },
         { value: "51%", label: "in high stress" },
-        { value: "3.12", label: "average GPA" },
       ],
       process: [
         {
@@ -677,24 +710,37 @@ export const portfolio = {
       repoUrl: "https://github.com/byochiram/customer-segmentation",
       visual: "data",
       previewUrl: "/projects/segment/preview-1.webp",
-      screenshots: ["/projects/segment/preview-1.webp"],
+      screenshots: [
+        "/projects/segment/preview-1.webp",
+        "/projects/segment/preview-2.webp",
+        "/projects/segment/preview-3.webp",
+        "/projects/segment/preview-4.webp",
+        "/projects/segment/preview-5.webp",
+        "/projects/segment/preview-6.webp",
+      ],
       kind: "Data",
       badge: "Segmentation",
+      links: [
+        {
+          label: "Notebook",
+          url: "https://colab.research.google.com/drive/10kiA1RN5fbKihkq6nL2SeVxqR1rwk9c2",
+        },
+      ],
       problem:
         "An automotive company moving into a new market already knows how to talk to its existing customers, sorted into four segments. The 2,627 people in the new market carry no segment at all — and treating them as one undifferentiated audience wastes most of the outreach.",
       solution:
         "Learn the segment boundaries from the 8,068 customers who are already labelled, then apply them to the new market in bulk.",
-      role: "Solo — modelling, app and dashboard",
+      role: "University group project — coursework",
       hardPart: {
-        title: "Four classes, and a wrong answer that still costs",
+        title: "A 54% model, and why it still ships with its numbers showing",
         body:
-          "Sorting into four segments is not a right-or-wrong call the way a yes-or-no model is; being wrong between two adjacent segments matters far less than being wrong across the board. So the app returns the probability of every segment, not just the winner — a prospect that comes back 45 percent B and 40 percent C is a genuinely different signal from one that is 95 percent B, and it lets a marketer decide how much to spend rather than trusting a single label.",
+          "The Random Forest lands at 54% on the holdout set. Against a four-way guess that would score 25%, it is more than double chance — but it is nowhere near certain, and pretending otherwise would be the real mistake. That number is why the app returns the probability of every segment instead of just the winner: a prospect that comes back 45% B and 40% C is a genuinely different signal from one at 95% B, and a marketer can spend accordingly. The accuracy is printed on the screen next to the prediction rather than buried, so nobody mistakes a suggestion for a fact.",
       },
       metrics: [
         { value: "8,068", label: "labelled customers" },
         { value: "2,627", label: "new prospects" },
         { value: "4", label: "segments" },
-        { value: "9", label: "features" },
+        { value: "54%", label: "holdout accuracy" },
       ],
       process: [
         {
