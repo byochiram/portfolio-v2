@@ -129,28 +129,15 @@ export default function Hero({ ready }: { ready: boolean }) {
     >
       <div className="hero__grid" aria-hidden="true" />
 
-      <div className="hero__registration" aria-hidden="true">
-        <span /><span /><span /><span />
-      </div>
-
       <div className="hero__poster">
         <div className="hero__space" aria-hidden="true">
           <div className="hero__space-layer hero__space-layer--far">
-            <div className="hero__orbit hero__orbit--outer"><i /></div>
+            {/* One orbit instead of three, and fewer specks — the background
+                should suggest depth, not compete with the portrait. */}
             <div className="hero__orbit hero__orbit--middle"><i /></div>
-            <div className="hero__orbit hero__orbit--inner"><i /></div>
-            {/* Fewer specks: twelve read as clutter behind the portrait. */}
             <div className="hero__starfield">
-              {Array.from({ length: 5 }).map((_, index) => <span key={index} />)}
+              {Array.from({ length: 3 }).map((_, index) => <span key={index} />)}
             </div>
-          </div>
-
-          <div className="hero__space-layer hero__space-layer--near">
-            <span className="hero__space-tag hero__space-tag--idea">IDEA <b>01</b></span>
-            <span className="hero__space-tag hero__space-tag--code">CODE <b>02</b></span>
-            <span className="hero__space-tag hero__space-tag--test">TEST <b>03</b></span>
-            <span className="hero__space-tag hero__space-tag--ship">SHIP <b>04</b></span>
-            <span className="hero__comet" />
           </div>
         </div>
 

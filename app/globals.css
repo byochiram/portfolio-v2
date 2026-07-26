@@ -6829,3 +6829,26 @@ main > section {
 @media (prefers-reduced-motion: reduce) {
   .hero__name-split span { transition: none; }
 }
+
+/* Corner registration marks, process tags and the comet are gone from the
+   markup; these rules keep any stragglers from rendering. */
+.hero__registration,
+.hero__space-tag,
+.hero__comet { display: none !important; }
+
+/* The name drifts slowly in opposite directions, so the two halves breathe
+   around the portrait instead of sitting still. Transform only, so it stays
+   on the compositor — and it pauses with the section when scrolled away. */
+.hero__name-split span:first-child { animation: heroNameDriftUp 7s ease-in-out infinite; }
+.hero__name-split span:last-child  { animation: heroNameDriftDown 7s ease-in-out infinite; }
+@keyframes heroNameDriftUp {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes heroNameDriftDown {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(14px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__name-split span { animation: none !important; }
+}
