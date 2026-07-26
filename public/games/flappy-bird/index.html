@@ -14,6 +14,16 @@
     <link rel="apple-touch-icon" href="./icon-192.png">
     <title>Flappy Bird</title>
     <style>
+        /* Double-tap di ponsel memicu zoom bawaan browser, dan pada game yang
+           dimainkan dengan ketukan cepat itu membuat seluruh layar yang bergerak,
+           bukan burungnya — jadi pemain mati bukan karena salah main.
+           touch-action: manipulation mematikan double-tap-zoom tapi tetap
+           mengizinkan pinch-zoom, jadi aksesibilitasnya tidak dikorbankan. */
+        html, body { touch-action: manipulation; }
+        /* html di depan supaya menang atas aturan canvas milik game
+           yang letaknya lebih bawah di stylesheet ini. */
+        html canvas { touch-action: none; }
+
         :root {
             --ink: #11152b;
             --paper: #f7f2e9;
@@ -1267,6 +1277,20 @@
                 navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(() => {});
             });
         }
+    
+        /* Safari iOS mengabaikan touch-action untuk double-tap-zoom, jadi
+           ketukan kedua yang datang dalam 320ms dibatalkan di sini. Ini tidak
+           mengganggu permainan: flap terikat pada pointerdown yang sudah
+           terjadi sebelum touchend. */
+        (() => {
+            let tapTerakhir = 0;
+            document.addEventListener("touchend", (event) => {
+                const sekarang = Date.now();
+                if (sekarang - tapTerakhir < 320) event.preventDefault();
+                tapTerakhir = sekarang;
+            }, { passive: false });
+        })();
+
     </script>
 </body>
 </html>

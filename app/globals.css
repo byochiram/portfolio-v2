@@ -7078,3 +7078,45 @@ html:not(.intro-done) .site-header {
     animation-delay: .5s;
   }
 }
+
+/* ══ REVEAL SECTION: HANYA OPACITY DAN TRANSFORM ══ */
+
+/* Kemunculan section terasa tersendat, paling terasa di kartu lanyard, dan
+   penyebabnya empat properti yang dianimasikan serentak — dua di antaranya
+   jenis yang tidak bisa diserahkan ke compositor:
+
+     filter: blur(14px) -> 0   selama 0,95s
+     clip-path: inset(5% 1.5%) -> inset(0)  selama 1,05s
+
+   Blur harus dihitung dan seluruh lapisan diraster ulang setiap frame. Pada
+   shell section seluas sekitar 970.000 piksel itu pekerjaan berat, dan
+   clip-path memaksa paint ulang tiap frame juga. Sementara opacity dan
+   transform cukup digeser compositor tanpa menyentuh piksel.
+
+   Di section About semuanya menumpuk: shell blur, .about-heading blur 8px di
+   DALAM shell yang sedang blur, dan fisika lanyard mulai jalan pada momen yang
+   sama persis karena dipicu observer yang sama. Itu yang kamu rasakan.
+
+   Koreografinya tidak diubah — jarak geser, skala, easing dan semua jeda
+   bertahap tetap. Yang dilepas hanya dua properti mahal itu. */
+[data-reveal] > .section-shell,
+[data-reveal].is-in-view > .section-shell {
+  filter: none;
+  clip-path: none;
+}
+[data-reveal] > .section-shell {
+  transition:
+    opacity .6s ease,
+    transform .9s cubic-bezier(.16, 1, .3, 1);
+}
+
+/* Blur bersarang di dalam shell yang juga blur. */
+.about-heading,
+.about.is-in-view .about-heading {
+  filter: none;
+}
+.about-heading {
+  transition:
+    opacity .65s ease .08s,
+    transform .85s cubic-bezier(.16, 1, .3, 1) .08s;
+}

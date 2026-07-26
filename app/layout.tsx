@@ -38,33 +38,33 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = (() => {
   const siteUrl = new URL(SITE_URL);
-  const socialImage = new URL("/og.webp", siteUrl).toString();
+  const socialImage = new URL("/og.34e120f8.webp", siteUrl).toString();
 
   return {
     metadataBase: siteUrl,
     title: "Rosidah Rahmati | Portfolio",
     description:
-      "Portfolio of Rosidah Rahmati, an Informatics fresh graduate in Batam who builds practical web-based systems and software products.",
+      "Web systems, data work, and playable experiments — built end to end, from the problem to the running product.",
     authors: [{ name: "Rosidah Rahmati" }],
     keywords: [
       "Rosidah Rahmati",
-      "Software Developer",
-      "Fresh Graduate Informatics",
-      "Batam",
-      "Laravel Developer",
-      "Web Developer",
+      "Portfolio",
+      "Web Development",
+      "Laravel",
+      "React",
+      "Data Analysis",
     ],
     openGraph: {
       title: "Rosidah Rahmati | Portfolio",
-      description: "Fresh graduate. Practical builder. Open to entry-level IT opportunities.",
+      description: "Web systems, data work, and playable experiments — built end to end, from the problem to the running product.",
       type: "website",
       url: siteUrl,
-      images: [{ url: socialImage, width: 1200, height: 630, alt: "Rosidah Rahmati — Software Developer" }],
+      images: [{ url: socialImage, width: 1200, height: 630, alt: "Portfolio Rosidah Rahmati" }],
     },
     twitter: {
       card: "summary_large_image",
       title: "Rosidah Rahmati | Portfolio",
-      description: "Fresh graduate. Practical builder. Open to entry-level IT opportunities.",
+      description: "Web systems, data work, and playable experiments — built end to end, from the problem to the running product.",
       images: [socialImage],
     },
   };
