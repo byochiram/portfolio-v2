@@ -73,7 +73,19 @@ export const metadata: Metadata = (() => {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${dmSans.variable} ${manrope.variable} ${anton.variable}`}>
-      <body>{children}</body>
+      <body>
+        {/* Runs before first paint, so a returning visitor sees content
+            immediately instead of waiting for React to hydrate. The same flag
+            is what tells Portfolio to skip mounting the intro at all. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(sessionStorage.getItem("rr-intro-seen")==="1")' +
+              'document.documentElement.classList.add("intro-done")}catch(e){}',
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

@@ -98,13 +98,12 @@ export default function Hero({ ready }: { ready: boolean }) {
       gsap.to(photo, { x: x * 12, rotateY: x * 2.2, duration: 0.8, ease: "power2.out" });
       gsap.to(".hero__line--solid", { x: x * -6, y: y * -3, duration: 1, ease: "power2.out" });
       gsap.to(".hero__space-layer--far", { x: x * -18, y: y * -12, duration: 1.2, ease: "power2.out" });
-      gsap.to(".hero__space-layer--near", { x: x * 28, y: y * 18, duration: 1, ease: "power2.out" });
     };
 
     const onLeave = () => {
       gsap.to(photo, { x: 0, rotateY: 0, duration: 0.9, ease: "power2.out" });
       gsap.to(".hero__line--solid", { x: 0, y: 0, duration: 1, ease: "power2.out" });
-      gsap.to(".hero__space-layer--far, .hero__space-layer--near", {
+      gsap.to(".hero__space-layer--far", {
         x: 0,
         y: 0,
         duration: 1,

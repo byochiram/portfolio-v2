@@ -7054,3 +7054,27 @@ main > section {
 .projects { contain-intrinsic-size: auto 834px; }
 .awards { contain-intrinsic-size: auto 473px; }
 .contact { contain-intrinsic-size: auto 373px; }
+
+/* ══ JARING PENGAMAN INTRO ══ */
+
+/* Seluruh halaman disembunyikan sampai kelas intro-done dipasang, dan kelas itu
+   hanya dipasang oleh JavaScript. Kalau hidrasi lambat atau gagal, pengunjung
+   dapat halaman kosong — pada portofolio itu kegagalan total. Overlay intro
+   sendiri sudah position: fixed dengan latar solid, jadi ia tidak butuh gerbang
+   ini untuk menutupi apa pun.
+   Enam detik dipilih supaya jaring ini hanya menyala saat memang ada yang
+   salah: intro normal selesai di 3,74 detik dan memasang kelasnya sendiri,
+   yang langsung membatalkan animasi ini. */
+html:not(.intro-done) main,
+html:not(.intro-done) .site-header {
+  animation: introFallbackReveal 0s linear 6s forwards;
+}
+@keyframes introFallbackReveal {
+  to { visibility: visible; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not(.intro-done) main,
+  html:not(.intro-done) .site-header {
+    animation-delay: .5s;
+  }
+}
