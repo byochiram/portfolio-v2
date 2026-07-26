@@ -41,7 +41,8 @@ export type Project = {
   metrics?: Metric[];
   process?: ProcessStep[];
   diagram?: "tempus" | "sigma" | "sipp";
-  documentation?: string;
+  /** Shown when a project cannot simply be opened in a browser. */
+  access?: string;
 };
 
 export const portfolio = {
@@ -171,8 +172,6 @@ export const portfolio = {
         },
       ],
       diagram: "tempus",
-      documentation:
-        "Documented end to end in a 246-page undergraduate thesis, from requirements through black-box testing.",
     },
     {
       title: "SiGMA",
@@ -250,8 +249,6 @@ export const portfolio = {
         },
       ],
       diagram: "sigma",
-      documentation:
-        "Documented by the team in a 99-page ICONIX report for the Software Development capstone, which placed first.",
     },
     {
       title: "SIPP",
@@ -315,46 +312,125 @@ export const portfolio = {
         },
       ],
       diagram: "sipp",
-      documentation:
-        "Documented in an internship report covering the requirements, design and the full test-scenario table.",
+      access:
+        "Internal government system — it runs inside BPSDMD Central Java and is not publicly accessible, so the screenshots are the only view of it.",
     },
     {
-      title: "Mall Kakros",
-      subtitle: "E-commerce Marketplace Platform",
+      title: "Mall Tenant Management",
+      subtitle: "Tenancy, leasing and billing system",
       description:
-        "A web-based marketplace / e-commerce platform with user authentication and a storefront flow, deployed on a live domain.",
+        "A management system for the tenant side of a shopping mall: units and floors, lease contracts and renewals, invoicing, payments with uploaded proof, and automated reminders.",
       bullets: [
-        "User authentication and account access",
-        "Product catalog and storefront browsing",
-        "Deployed live at mall.kakros.id",
-        "Description and stack to be confirmed with the owner",
+        "Tenant records with contacts, documents, notes and unit assignments",
+        "Lease contracts with renewal tracking across floors and units",
+        "Invoicing with line items, payments, and uploaded payment proof",
+        "Scheduled email reminders plus an activity log over every change",
       ],
-      tags: ["Laravel", "PHP", "MySQL"],
+      tags: ["React", "Express", "Prisma", "PostgreSQL", "JWT", "Vite"],
       liveUrl: "https://mall.kakros.id/",
       repoUrl: "#",
       visual: "auction",
       previewUrl: "",
       kind: "Web App",
-      badge: "Live Project",
+      badge: "Full-stack",
+      problem:
+        "A mall's tenancy usually lives in spreadsheets and chat threads. Lease renewals get noticed late, invoices go out by hand, and proof of payment arrives as a photo in a conversation with nothing tying it back to the invoice it settles.",
+      solution:
+        "One system for the whole tenancy lifecycle — from assigning a unit and signing a lease, through invoicing and payment, to the reminders that keep it moving.",
+      role: "Solo — full-stack, React front end and Express API",
+      hardPart: {
+        title: "Making money movement traceable",
+        body:
+          "Billing is where a system like this earns trust, so nothing is a loose number. An invoice carries its own line items, a payment points at the invoice it settles and carries the uploaded proof file, and every change lands in an activity log. Reminders run as a scheduled job rather than something a person has to remember, and sent mail is recorded in an email log so a missing notice can actually be traced.",
+      },
+      metrics: [
+        { value: "17", label: "data models" },
+        { value: "11", label: "API modules" },
+        { value: "6", label: "test suites" },
+      ],
+      process: [
+        {
+          phase: "Data modelling",
+          did: "Modelled the tenancy domain before writing endpoints — floors and units, tenants and their contacts, leases and renewals, invoices and line items, payments, notifications and logs.",
+          artifact: "Prisma schema, 17 models",
+        },
+        {
+          phase: "API design",
+          did: "Split the server into modules per concern instead of one route file: auth, tenant, unit, contract, billing, payment, notification, dashboard, upload, activity log and a tenant portal.",
+          artifact: "11 Express modules",
+        },
+        {
+          phase: "Implementation",
+          did: "Built JWT auth with hashed passwords, schema validation on every request, file upload for payment proof, and a nightly cron job for reminder emails.",
+          artifact: "React client, Express API",
+        },
+        {
+          phase: "Testing",
+          did: "Wrote integration tests for the parts where mistakes cost money — auth, billing, contracts, tenants, units and notifications.",
+          artifact: "Jest test suites",
+        },
+        {
+          phase: "Deployment",
+          did: "Split hosting by workload: static front end on Vercel, API on Render, PostgreSQL on Neon, with Docker files and CI in the repo.",
+          artifact: "Vercel + Render + Neon",
+        },
+      ],
     },
     {
       title: "Todo App",
-      subtitle: "Task Management Web App",
+      subtitle: "Offline-first task app — installable PWA",
       description:
-        "A lightweight task-management web app for creating, tracking, and completing tasks, deployed on Cloudflare Pages.",
+        "A task app with priorities, categories, deadlines, drag-and-drop ordering, search and undo. It runs entirely on the device, works offline, and installs like a native app.",
       bullets: [
-        "Create, complete, and manage tasks",
-        "Fast static deployment on Cloudflare Pages",
-        "Responsive, browser-based interface",
-        "Description and stack to be confirmed with the owner",
+        "Priorities, categories, and deadlines down to the time of day",
+        "Drag and drop to reorder, with undo after a delete",
+        "Search, filter by state or category, and export to JSON",
+        "Works offline and installs as a PWA on phone or desktop",
       ],
-      tags: ["JavaScript", "Cloudflare Pages"],
+      tags: ["React", "Vite", "PWA", "JavaScript"],
       liveUrl: "https://todo-app-bmg.pages.dev/",
       repoUrl: "#",
       visual: "academic",
       previewUrl: "",
       kind: "Web App",
       badge: "Live App",
+      problem:
+        "Task apps tend to sit at one of two extremes: too bare to be useful, or an account-and-sync product for what is really a personal list. I wanted the useful features without handing my list to a server.",
+      solution:
+        "A task app that keeps everything on the device, still works with no connection, and installs to the home screen.",
+      role: "Solo — front end, no backend by design",
+      hardPart: {
+        title: "Reordering and undo, written by hand",
+        body:
+          "Drag-and-drop and undo are the two features people reach for a library to get. I wrote them as custom hooks instead — one holding the drag state and drop position, one keeping the last deleted item long enough to restore it. Doing it by hand meant understanding the pointer events and state transitions rather than configuring someone else's abstraction, and it kept the dependency list to React and the router.",
+      },
+      metrics: [
+        { value: "3", label: "custom hooks" },
+        { value: "0", label: "UI libraries" },
+        { value: "100%", label: "offline capable" },
+      ],
+      process: [
+        {
+          phase: "Scope",
+          did: "Decided up front that the list stays on the device — that removed accounts, a server and a database from the problem, and made offline the default rather than a feature.",
+          artifact: "localStorage as the store",
+        },
+        {
+          phase: "Structure",
+          did: "Split state into custom hooks — todos, drag and drop, undo — so the page components stay about layout and the logic stays testable on its own.",
+          artifact: "useTodos, useDragDrop, useUndo",
+        },
+        {
+          phase: "Implementation",
+          did: "Built the task features on top of that: priority and category, deadline with time, search and filters, JSON export, and a light and dark theme.",
+          artifact: "React + Vite app",
+        },
+        {
+          phase: "Offline",
+          did: "Added a service worker and manifest so it installs to the home screen and keeps working with no connection, then shipped it to Cloudflare Pages.",
+          artifact: "Installable PWA",
+        },
+      ],
     },
     {
       title: "Pesawat Ring Runner",

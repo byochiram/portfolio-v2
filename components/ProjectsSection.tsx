@@ -389,8 +389,8 @@ function ProjectsSection({ copy }: { copy: Copy }) {
                     </ul>
                   </section>
 
-                  {selectedProject.documentation && (
-                    <p className="pm__doc">{selectedProject.documentation}</p>
+                  {selectedProject.access && (
+                    <p className="pm__doc">{selectedProject.access}</p>
                   )}
                 </div>
               )}
