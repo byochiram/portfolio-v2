@@ -189,9 +189,6 @@ function ProjectsSection({ copy }: { copy: Copy }) {
 
         <div className="project-tabs" role="tablist" aria-label="Project categories">
           {projectGroups.map((group) => {
-            const count = portfolio.projects.filter(
-              (project) => getProjectCategory(project) === group.label
-            ).length;
             const isActive = activeTab === group.label;
 
             return (
@@ -207,7 +204,6 @@ function ProjectsSection({ copy }: { copy: Copy }) {
               >
                 <span className="project-tab__name">{group.label}</span>
                 <small className="project-tab__caption">{group.caption}</small>
-                <b className="project-tab__count">{String(count).padStart(2, "0")}</b>
               </button>
             );
           })}
