@@ -104,10 +104,11 @@ export const portfolio = {
       bullets: [
         "Built an end-to-end auction flow from catalog browsing to winner transaction",
         "Delivered workflows across 4 roles: Guest, Bidder, Admin, and Superadmin",
-        "Engineered anti-sniping logic, bid validation, email verification, checkout, shipping cost calculation, and winner transactions",
+        "Engineered anti-sniping logic, bid validation, email verification, and winner transactions",
+        "Winner invoices paid through Duitku, with shipping cost quoted from RajaOngkir",
         "Validated 17 use cases through 161 black-box test scenarios",
       ],
-      tags: ["Laravel", "PHP", "MySQL", "Blade", "Tailwind CSS", "JavaScript"],
+      tags: ["Laravel", "PHP", "MySQL", "Duitku", "RajaOngkir", "Blade", "Tailwind CSS"],
       liveUrl: "https://auctions.kakros.id/",
       repoUrl: "https://github.com/byochiram/watch-auction-system",
       visual: "auction",
@@ -136,6 +137,8 @@ export const portfolio = {
         body:
           "Two rules do the work. Anti-sniping extends the closing time when a bid lands in the final moments, so a last-second bid cannot steal a lot before anyone can respond. And an unpaid win is never handed to the runner-up — the lot is rescheduled instead. That removes the incentive to win a lot cheaply and simply walk away. Payment runs on a 24-hour invoice; miss it and bidding is suspended for a week while the account still works.",
       },
+      access:
+        "Live demo — payments run on the Duitku sandbox, so nothing charges real money.",
       metrics: [
         { value: "17", label: "use cases" },
         { value: "161", label: "test scenarios" },
