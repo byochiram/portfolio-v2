@@ -253,6 +253,37 @@ export const portfolio = {
       ],
     },
     {
+      title: "KasirApp",
+      subtitle: "Point of sale with audited stock and live payments",
+      description:
+        "A point of sale system for a shop: transactions and printed receipts, stock with a full audit trail, customers with points, purchase orders to suppliers, expenses, and profit reports. QRIS and virtual account payments run through a real gateway rather than being recorded by hand.",
+      bullets: [
+        "Cashier screen with barcode scan, keyboard shortcuts, and an 80mm printable receipt",
+        "Every stock movement recorded with before and after values and who made it",
+        "Purchase orders from draft to received, updating stock and cost price on arrival",
+        "QRIS and virtual account paid through Midtrans, confirmed by signed webhook",
+        "Two roles enforced on every API route, not just hidden in the sidebar",
+      ],
+      tags: ["Next.js", "TypeScript", "SQLite", "Tailwind CSS", "Midtrans", "Docker"],
+      liveUrl: "https://kasir.kakros.id/",
+      repoUrl: "https://github.com/byochiram/kasir-pos",
+      visual: "auction",
+      previewUrl: "",
+      kind: "Web App",
+      badge: "Live Project",
+      problem:
+        "A shop that records sales by hand cannot answer the questions that matter at closing time: which stock actually moved, whether the cash drawer matches what was sold, and whether the day made a profit once cost price is taken into account. Non-cash payments make it worse, because money can be marked as received without any trace that it ever arrived.",
+      solution:
+        "A point of sale where the server is the only source of truth for money and stock. Every transaction, stock movement and payment leaves a record that can be traced back, and the two payment methods that can be confirmed automatically are confirmed by the gateway rather than by the cashier.",
+      hardPart: {
+        title: "Making sure the money on screen actually arrived",
+        body:
+          "Two rules carry most of the weight. Money is never trusted from the client: the browser sends the raw discount and its type, never a computed amount, and the tax rate is always read from store settings rather than the request. And every non-cash method that is recorded by hand requires a proof number, enforced on the server, so an approval number from the card terminal or a transfer reference can be matched against the bank statement at the end of the day. QRIS and virtual account go further and are confirmed by Midtrans through a webhook verified with an SHA-512 signature, with a notification whose amount differs from the bill rejected outright. The cashier screen still polls the gateway every three seconds as a backup, because a webhook can arrive late or never; both paths are idempotent, so a redelivered notification cannot award customer points twice.",
+      },
+      access:
+        "Live demo with seeded accounts — the credentials are in the repository README, and payments run on the Midtrans sandbox so nothing charges real money.",
+    },
+    {
       title: "SiGMA",
       subtitle: "Academic Capstone — 1st Place Winner",
       description:
