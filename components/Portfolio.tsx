@@ -70,15 +70,21 @@ export default function Portfolio() {
       .map(([id]) => document.getElementById(id))
       .filter((section): section is HTMLElement => Boolean(section));
 
+    // Penandanya satu pita tipis di tengah layar: section yang menyentuh pita
+    // itulah yang sedang dibaca. Sebelumnya syaratnya intersectionRatio >= 0.15,
+    // dan rasio itu mengukur berapa bagian DARI SECTION yang terlihat — jadi
+    // makin panjang section-nya makin kecil rasionya, sampai ambang tetap 0.15
+    // mustahil dicapai. Di layar 360x640 dengan tab Web terbuka, Projects
+    // setinggi 1818px sementara pita pandang lama hanya 224px, sehingga rasio
+    // maksimalnya 0.123 dan menu Projects tidak pernah menyala. Pita tipis ini
+    // tidak bergantung pada tinggi section sama sekali.
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.15) {
-            setActiveSection(entry.target.id);
-          }
+          if (entry.isIntersecting) setActiveSection(entry.target.id);
         }
       },
-      { rootMargin: "-20% 0px -45%", threshold: [0.15, 0.3, 0.5] }
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
     );
 
     sections.forEach((section) => observer.observe(section));
