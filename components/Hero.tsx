@@ -15,7 +15,7 @@ export default function Hero({ ready }: { ready: boolean }) {
     const ctx = gsap.context(() => {
       if (reducedMotion) {
         gsap.set(
-          ".hero__poster, .hero__letter, .hero__name-rail, .hero__vertical-text, .hero__reveal, .hero__scroll-hint",
+          ".hero__poster, .hero__letter, .hero__reveal, .hero__scroll-hint",
           { opacity: 1, clearProps: "transform,filter" }
         );
         return;
@@ -25,9 +25,7 @@ export default function Hero({ ready }: { ready: boolean }) {
 
       timeline.set(".hero__poster", { opacity: 0, scale: 0.84, filter: "blur(16px)" });
       timeline.set(".hero__letter", { opacity: 0, yPercent: 115, rotateX: -45 });
-      timeline.set(".hero__name-rail", { opacity: 0, y: 42 });
       timeline.set(photoRef.current, { opacity: 0, y: 150, scale: 1.16 });
-      timeline.set(".hero__vertical-text", { opacity: 0 });
       timeline.set(".hero__reveal", { opacity: 0, y: 26 });
       timeline.set(".hero__scroll-hint", { opacity: 0 });
 
@@ -47,11 +45,6 @@ export default function Hero({ ready }: { ready: boolean }) {
         stagger: 0.045,
       }, 0.18);
 
-      timeline.to(".hero__name-rail", {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-      }, 0.48);
 
       timeline.to(photoRef.current, {
         opacity: 1,
@@ -61,7 +54,6 @@ export default function Hero({ ready }: { ready: boolean }) {
         ease: "expo.out",
       }, 0.28);
 
-      timeline.to(".hero__vertical-text", { opacity: 1, duration: 0.8 }, 0.78);
       timeline.to(".hero__reveal", {
         opacity: 1,
         y: 0,

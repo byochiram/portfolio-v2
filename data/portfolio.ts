@@ -268,13 +268,25 @@ export const portfolio = {
       liveUrl: "https://kasir.kakros.id/",
       repoUrl: "https://github.com/byochiram/kasir-pos",
       visual: "auction",
-      previewUrl: "",
+      previewUrl: "/projects/kasir/preview-1.b3eb7c71.webp",
+      screenshots: [
+        "/projects/kasir/preview-1.b3eb7c71.webp",
+        "/projects/kasir/preview-2.e8f290e5.webp",
+        "/projects/kasir/preview-3.2f59efb5.webp",
+        "/projects/kasir/preview-4.ef337e50.webp",
+        "/projects/kasir/preview-5.80cdeb1e.webp",
+        "/projects/kasir/preview-6.e0bf0a23.webp",
+        "/projects/kasir/preview-7.908fc143.webp",
+        "/projects/kasir/preview-8.cd60c465.webp",
+        "/projects/kasir/preview-9.72be57eb.webp",
+      ],
       kind: "Web App",
       badge: "Live Project",
       problem:
         "A shop that records sales by hand cannot answer the questions that matter at closing time: which stock actually moved, whether the cash drawer matches what was sold, and whether the day made a profit once cost price is taken into account. Non-cash payments make it worse, because money can be marked as received without any trace that it ever arrived.",
       solution:
         "A point of sale where the server is the only source of truth for money and stock. Every transaction, stock movement and payment leaves a record that can be traced back, and the two payment methods that can be confirmed automatically are confirmed by the gateway rather than by the cashier.",
+      role: "Solo — full-stack, from database to receipt printing",
       hardPart: {
         title: "Making sure the money on screen actually arrived",
         body:
